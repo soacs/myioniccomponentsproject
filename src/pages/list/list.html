@@ -1,0 +1,59 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title >List of Projects Project</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <span *ngIf="isOpen;else completedProjects">
+
+     <ion-grid>
+      <ion-row>
+        <ion-col text-center col-sm-6><p ion-text color="secondary">List of open projects</p></ion-col>
+        <ion-col text-center col-sm-6><ion-searchbar (ionInput)="getItems($event)"></ion-searchbar></ion-col>
+      </ion-row>
+    </ion-grid>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let project  of projectItems" #slidingItem>
+      <ion-item>
+        {{project}}
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button (click)="deleteProject(project)" color="danger" >Delete</button>
+        <button ion-button (click)="closeProject(slidingItem)">Close</button>
+      </ion-item-options>
+    </ion-item-sliding>
+    </ion-list>
+    </span>
+
+  <ng-template #completedProjects>
+    <p ion-text color="secondary">List of completed projects</p>
+    <ion-list>
+      <ion-item-sliding *ngFor="let project  of completedProjectItems" #slidingItem>
+        <ion-item>
+          {{project}}
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button (click)="deleteCompletedProject(project)" color="danger" >Delete</button>
+          <button ion-button (click)="closeProject(slidingItem)">Close</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ng-template>
+
+  <!-- Segment in content -->
+  <ion-segment [(ngModel)]="projectState" color="primary" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="open">
+      Open
+    </ion-segment-button>
+    <ion-segment-button value="completed">
+      Completed
+    </ion-segment-button>
+  </ion-segment>
+
+</ion-content>
