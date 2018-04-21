@@ -1,15 +1,21 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, AlertController} from 'ionic-angular';
+import {NavController, NavParams, AlertController, ToastController, LoadingController, Platform} from 'ionic-angular';
 import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import { ToastController } from 'ionic-angular';
-import { LoadingController } from 'ionic-angular';
+import { Media, MediaObject } from '@ionic-native/media';
+import { File } from '@ionic-native/file';
 
 @Component({
   selector: 'page-general',
   templateUrl: 'general.html',
 })
 export class GeneralPage {
+
+  recording: boolean = false;
+  filePath: string;
+  fileName: string;
+  audio: MediaObject;
+  audioList: any[] = [];
 
   generalForm: FormGroup;
 
@@ -26,7 +32,7 @@ export class GeneralPage {
   picture: boolean = false;
   licensed: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
+  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
 
     this.generalForm = this.formBuilder.group({
       bugetRange: [''],
@@ -39,6 +45,46 @@ export class GeneralPage {
       licensed: ['']
     });
 
+    this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory exists')).catch(err => console.log('Directory does not exist'));
+
+  }
+
+  startRecording(){
+
+    if (this.platform.is('ios')) {
+      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+      this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
+      this.audio = this.media.create(this.filePath);
+    } else if (this.platform.is('android')) {
+      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+      this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
+      this.audio = this.media.create(this.filePath);
+    }
+    this.audio.startRecord();
+    this.recording = true;
+
+  }
+
+  stopRecording(){
+      this.audio.stopRecord();
+      let data = { filename: this.fileName };
+      this.audioList.push(data);
+      localStorage.setItem("audiolist", JSON.stringify(this.audioList));
+      this.recording = false;
+      this.getAudioList();
+  }
+
+  playRecording(){
+    this.audio.play();
+  }
+
+  showAlert(message){
+    let alert = this.alertCtrl.create({
+      title: 'Error',
+      subTitle: message,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   ionViewDidLoad() {
@@ -129,5 +175,27 @@ export class GeneralPage {
       ]
     });
     confirm.present();
+  }
+
+  ionViewWillEnter() {
+    this.getAudioList();
+  }
+  getAudioList() {
+    if(localStorage.getItem("audiolist")) {
+      this.audioList = JSON.parse(localStorage.getItem("audiolist"));
+      console.log(this.audioList);
+    }
+  }
+
+  playAudio(file,idx) {
+    if (this.platform.is('ios')) {
+      this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + file;
+      this.audio = this.media.create(this.filePath);
+    } else if (this.platform.is('android')) {
+      this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + file;
+      this.audio = this.media.create(this.filePath);
+    }
+    this.audio.play();
+    this.audio.setVolume(0.8);
   }
 }

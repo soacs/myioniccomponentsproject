@@ -39,6 +39,33 @@
     </ion-item>
   </ion-list>
 
+
+
+    <ion-grid>
+      <ion-row>
+        <ion-col col-12 >
+          <ion-card class="block">
+            <<p>Record Requirements</p>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+    <ion-card>
+      <ion-card-content>
+        <ion-card-title>
+          <button ion-button primary (click)="stopRecord()" *ngIf="recording"><ion-icon name="mic-off"></ion-icon>&nbsp;&nbsp;Stop Record</button>
+          <button ion-button primary (click)="startRecord()" *ngIf="!recording"><ion-icon name="mic"></ion-icon>&nbsp;&nbsp;Start Record</button>
+        </ion-card-title>
+      </ion-card-content>
+    </ion-card>
+    <ion-list>
+      <ion-item *ngFor="let audio of audioList; index as i;">
+        <p>{{audio.filename}}</p>
+        <button ion-button clear item-end large (click)="playAudio(audio.filename, i)"><ion-icon name="play"></ion-icon></button>
+      </ion-item>
+    </ion-list>
+
+
   <p>Approximate Budget</p>
 
     <ion-range min="100" max="1000" step="10" [(ngModel)]="bugetRange" color="secondary" formControlName="bugetRange">

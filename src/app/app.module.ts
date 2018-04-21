@@ -2,6 +2,8 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { ProjectsPageModule} from '../pages/projects/projects.module';
+import { Media } from '@ionic-native/media';
+import { File } from '@ionic-native/file';
 
 import { MyApp } from './app.component';
 
@@ -37,7 +39,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Media,
+    File
   ]
 })
 export class AppModule {}
