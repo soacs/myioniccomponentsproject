@@ -3,15 +3,49 @@
     <ion-title>Home</ion-title>
   </ion-navbar>
 </ion-header>
-
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <ion-card color="blueish">
+    <img scr="assets/imgs/homerepair.jpg">
+    <ion-card-title text-center>
+      Welcome to HomeCloud
+    </ion-card-title>
+    <ion-card-content>
+      <p>
+        Organize you home projects using your mobile phome. Take pictures, video, audio and define projects.
+      </p>
+    </ion-card-content>
+
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Click on a button to begin:
+    </ion-card-header>
+    <ion-list>
+      <button ion-item>
+        <ion-icon name="create" item-start></ion-icon>
+        Create Projects
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+      <button ion-item>
+        <ion-icon name="list" item-start></ion-icon>
+        List Projects
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+      <button ion-item>
+        <ion-icon name="share" item-start></ion-icon>
+        Share Projects Details
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+      <button ion-item>
+        <ion-icon name="send" item-start></ion-icon>
+        Publish Projects
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+      <button ion-item>
+        <ion-icon name="filing" item-start></ion-icon>
+        Cloud Archive
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+    </ion-list>
+  </ion-card>
 </ion-content>

@@ -39,8 +39,6 @@
     </ion-item>
   </ion-list>
 
-
-
     <ion-grid>
       <ion-row>
         <ion-col col-12 >
@@ -49,6 +47,7 @@
           </ion-card>
         </ion-col>
       </ion-row>
+    </ion-grid>
 
     <ion-card>
       <ion-card-content>
@@ -64,7 +63,6 @@
         <button ion-button clear item-end large (click)="playAudio(audio.filename, i)"><ion-icon name="play"></ion-icon></button>
       </ion-item>
     </ion-list>
-
 
   <p>Approximate Budget</p>
 
@@ -122,6 +120,7 @@
         <ion-col text-center col-sm-6><button ion-button type="submit" round text-center>Submit</button></ion-col>
       </ion-row>
     </ion-grid>
+
   </form>
 
   <ion-grid>
@@ -130,4 +129,5 @@
       <ion-col text-center col-sm-6><button ion-button (click)="cancel()" round text-center>Cancel</button></ion-col>
     </ion-row>
   </ion-grid>
+
 </ion-content>
