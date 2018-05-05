@@ -4,6 +4,7 @@ import { ActionSheetController } from 'ionic-angular';
 import { GeneralPage } from '../general/general';
 import { ListPage } from '../list/list';
 import { SearchPage } from '../search/search';
+import { PublishPage } from '../publish/publish';
 
 /**
  * Generated class for the ProjectsPage page.
@@ -27,7 +28,7 @@ export class ProjectsPage {
   }
 
   publishProjects() {
-    this.navCtrl.push(ListPage);
+    this.navCtrl.push(PublishPage);
   }
 
   searchProjects() {

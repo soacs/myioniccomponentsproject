@@ -4,6 +4,7 @@ import { ProjectsPage } from './projects';
 import { GeneralPage } from '../general/general';
 import { ListPage } from '../list/list';
 import { SearchPage } from '../search/search';
+import { PublishPage } from '../publish/publish';
 import { Camera } from '@ionic-native/camera';
 
 @NgModule({
@@ -11,7 +12,8 @@ import { Camera } from '@ionic-native/camera';
     ProjectsPage,
     GeneralPage,
     ListPage,
-    SearchPage
+    SearchPage,
+    PublishPage
   ],
   imports: [
     IonicPageModule.forChild(ProjectsPage),
@@ -22,7 +24,8 @@ import { Camera } from '@ionic-native/camera';
   entryComponents: [
      GeneralPage,
      ListPage,
-     SearchPage
+     SearchPage,
+     PublishPage
   ],
 })
 export class ProjectsPageModule {}
