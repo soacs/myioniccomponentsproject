@@ -11,7 +11,7 @@
     </ion-card-title>
     <ion-card-content>
       <p>
-        Organize you home projects using your mobile phome. Take pictures, video, audio and define projects.
+        Organize you home projects using your mobile phone. Take pictures, video, audio and define projects. Use the cloud to share, publish and get price quotes for your projects.
       </p>
     </ion-card-content>
 
@@ -21,18 +21,18 @@
       Click on a button to begin:
     </ion-card-header>
     <ion-list>
-      <button ion-item>
-        <ion-icon name="create" item-start></ion-icon>
-        Create Projects
+      <button ion-item (click)="selectTab(1)">
+        <ion-icon name="construct"  item-start ></ion-icon>
+        Manage Projects
+        <ion-icon name="arrow-forward" item-end></ion-icon>
+      </button>
+      <button ion-item (click)="selectTab(1)">
+        <ion-icon name="eye" item-start></ion-icon>
+        View Bids on Projects
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>
       <button ion-item>
-        <ion-icon name="list" item-start></ion-icon>
-        List Projects
-        <ion-icon name="arrow-forward" item-end></ion-icon>
-      </button>
-      <button ion-item>
-        <ion-icon name="share" item-start></ion-icon>
+        <ion-icon name="share" item-start ></ion-icon>
         Share Projects Details
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>

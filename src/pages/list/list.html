@@ -1,23 +1,21 @@
 
-<ion-header>
 
-  <ion-navbar>
-    <ion-title >List of Projects Project</ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="projectState" color="primary">
+      <ion-segment-button value="open">
+        Open
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        Completed
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 
-</ion-header>
 
 <ion-content padding>
 
-  <span *ngIf="isOpen;else completedProjects">
-
-     <ion-grid>
-      <ion-row>
-        <ion-col text-center col-sm-6><p ion-text color="secondary">List of open projects</p></ion-col>
-        <ion-col text-center col-sm-6><ion-searchbar (ionInput)="getItems($event)"></ion-searchbar></ion-col>
-      </ion-row>
-    </ion-grid>
-
+  <span *ngIf="projectState == 'open';else completedProjects">
+    <p ion-text color="secondary">List of open projects</p>
   <ion-list>
     <ion-item-sliding *ngFor="let project  of projectItems" #slidingItem>
       <ion-item>
@@ -46,14 +44,5 @@
     </ion-list>
   </ng-template>
 
-  <!-- Segment in content -->
-  <ion-segment [(ngModel)]="projectState" color="primary" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="open">
-      Open
-    </ion-segment-button>
-    <ion-segment-button value="completed">
-      Completed
-    </ion-segment-button>
-  </ion-segment>
-
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
 </ion-content>

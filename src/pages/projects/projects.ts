@@ -20,9 +20,19 @@ export class ProjectsPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController) {
   }
-  viewProjectList() {
+
+  viewProjects() {
     this.navCtrl.push(ListPage);
   }
+
+  publishProjects() {
+    this.navCtrl.push(ListPage);
+  }
+
+  searchProjects() {
+    this.navCtrl.push(ListPage);
+  }
+
   createProject() {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Create Home Project',

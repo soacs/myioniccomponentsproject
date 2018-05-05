@@ -5,26 +5,27 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
     <ion-title>projects</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
 <ion-content padding>
   <ion-list>
-  <ion-item>
-    <ion-icon name="construct" item-start isActive="false"></ion-icon>
-    Number of Projects
-    <ion-badge item-end>4</ion-badge>
-
-  </ion-item>
+    <ion-item>
+      <ion-icon name="construct" item-start isActive="false"></ion-icon>
+      Number of Projects
+      <ion-badge item-end>4</ion-badge>
+    </ion-item>
   </ion-list>
-
-  <button ion-button (click)="viewProjectList()" full large>List</button>
-  <button ion-button (click)="createProject()" full large>Create New Project</button>
-
-
+  <ion-card>
+    <ion-card-header>
+      Project Options
+    </ion-card-header>
+    <ion-list>
+      <button ion-button (click)="createProject()" full large>Create</button>
+      <button ion-button (click)="viewProjects()" full large>List All</button>
+      <button ion-button (click)="publishProjects()" full large>Publish</button>
+      <button ion-button (click)="searchProjects()" full large>Search</button>
+    </ion-list>
+  </ion-card>
 </ion-content>
