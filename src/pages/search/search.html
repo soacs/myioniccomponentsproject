@@ -1,17 +1,32 @@
 <ion-header>
   <ion-navbar color="blueish">
-    <ion-title>List Projects</ion-title>
+    <ion-title>Search Projects</ion-title>
   </ion-navbar>
 </ion-header>
+
 <ion-content padding>
-  <ion-segment [(ngModel)]="projectState" color="primary">
-    <ion-segment-button value="open">
-      Open
-    </ion-segment-button>
-    <ion-segment-button value="completed">
-      Completed
-    </ion-segment-button>
-  </ion-segment>
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+
+  <ion-grid radio-group [(ngModel)]="projectState" color="primary">
+    <ion-row >
+      <span>State of Project</span>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+  <ion-item>
+    <ion-label>Open</ion-label>
+    <ion-radio color="red" checked="true" value="open"></ion-radio>
+  </ion-item>
+      </ion-col>
+      <ion-col>
+    <ion-item>
+      <ion-label>Complete</ion-label>
+      <ion-radio color="blue" value="complete"></ion-radio>
+    </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <span *ngIf="projectState == 'open';else completedProjects">
     <p ion-text color="secondary">List of open projects</p>
   <ion-list>
@@ -20,12 +35,13 @@
         {{project}}
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button (click)="deleteProject(project)" color="danger">Delete</button>
+        <button ion-button (click)="deleteProject(project)" color="danger" >Delete</button>
         <button ion-button (click)="closeProject(slidingItem)">Close</button>
       </ion-item-options>
     </ion-item-sliding>
     </ion-list>
     </span>
+
   <ng-template #completedProjects>
     <p ion-text color="secondary">List of completed projects</p>
     <ion-list>
@@ -34,10 +50,12 @@
           {{project}}
         </ion-item>
         <ion-item-options side="right">
-          <button ion-button (click)="deleteCompletedProject(project)" color="danger">Delete</button>
+          <button ion-button (click)="deleteCompletedProject(project)" color="danger" >Delete</button>
           <button ion-button (click)="closeProject(slidingItem)">Close</button>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
   </ng-template>
+
+
 </ion-content>

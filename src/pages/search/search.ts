@@ -2,12 +2,11 @@ import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {ItemSliding} from 'ionic-angular';
 
-
 @Component({
-  selector: 'page-list',
-  templateUrl: 'list.html',
+  selector: 'page-search',
+  templateUrl: 'search.html',
 })
-export class ListPage {
+export class SearchPage {
 
   item: ItemSliding;
   projectState: string = "open";

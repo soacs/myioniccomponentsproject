@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ActionSheetController } from 'ionic-angular';
 import { GeneralPage } from '../general/general';
 import { ListPage } from '../list/list';
+import { SearchPage } from '../search/search';
 
 /**
  * Generated class for the ProjectsPage page.
@@ -30,7 +31,7 @@ export class ProjectsPage {
   }
 
   searchProjects() {
-    this.navCtrl.push(ListPage);
+    this.navCtrl.push(SearchPage);
   }
 
   createProject() {
