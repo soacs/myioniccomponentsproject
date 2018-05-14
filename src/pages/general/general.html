@@ -6,12 +6,12 @@
 -->
 <ion-header>
   <ion-navbar color="blueish">
-    <ion-title>Creating General Project</ion-title>
+    <ion-title>Creating Project</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <p>Project Name:
-  <span color="danger">{{projectName | uppercase}}</span></p>
+  <ion-label class="projectLabel" color="danger">Project Name:
+ {{projectName | uppercase}}</ion-label>
   <form #f="ngForm" [formGroup]="generalForm" (ngSubmit)="onSubmit(f)">
     <p>Requirements</p>
     <ion-list color="secondary">

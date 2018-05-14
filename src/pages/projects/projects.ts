@@ -41,7 +41,7 @@ export class ProjectsPage {
 
   createProject() {
     this.presentPopover();
-    console.log("popoverData = " + JSON.stringify(this.popoverData));
+    console.log("projectName = " + JSON.stringify(this.projectName));
   }
 
   viewProjects() {
