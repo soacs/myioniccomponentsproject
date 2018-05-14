@@ -5,6 +5,8 @@ import { GeneralPage } from '../general/general';
 import { ListPage } from '../list/list';
 import { SearchPage } from '../search/search';
 import { PublishPage } from '../publish/publish';
+import { RecordingsPage } from '../recordings/recordings';
+import { PopoverPage } from '../popover/popover';
 import { Camera } from '@ionic-native/camera';
 
 @NgModule({
@@ -13,7 +15,9 @@ import { Camera } from '@ionic-native/camera';
     GeneralPage,
     ListPage,
     SearchPage,
-    PublishPage
+    PublishPage,
+    RecordingsPage,
+    PopoverPage
   ],
   imports: [
     IonicPageModule.forChild(ProjectsPage),
@@ -25,7 +29,9 @@ import { Camera } from '@ionic-native/camera';
      GeneralPage,
      ListPage,
      SearchPage,
-     PublishPage
+     PublishPage,
+     RecordingsPage,
+     PopoverPage
   ],
 })
 export class ProjectsPageModule {}

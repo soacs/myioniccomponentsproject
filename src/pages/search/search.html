@@ -28,7 +28,7 @@
   </ion-grid>
 
   <span *ngIf="projectState == 'open';else completedProjects">
-    <p ion-text color="secondary">List of open projects</p>
+    <p ion-text color="primary">List of open projects</p>
   <ion-list>
     <ion-item-sliding *ngFor="let project  of projectItems" #slidingItem>
       <ion-item>

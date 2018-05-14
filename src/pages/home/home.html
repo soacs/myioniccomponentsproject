@@ -4,9 +4,9 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <ion-card color="blueish">
+  <ion-card color="blueish2">
     <img scr="assets/imgs/homerepair.jpg">
-    <ion-card-title text-center>
+    <ion-card-title text-center >
       Welcome to HomeCloud
     </ion-card-title>
     <ion-card-content>
@@ -18,31 +18,31 @@
   </ion-card>
   <ion-card>
     <ion-card-header>
-      Click on a button to begin:
+      Choose action:
     </ion-card-header>
     <ion-list>
       <button ion-item (click)="selectTab(1)">
-        <ion-icon name="construct"  item-start ></ion-icon>
+        <ion-icon name="construct" color="manageColor" item-start ></ion-icon>
         Manage Projects
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>
       <button ion-item (click)="selectTab(1)">
-        <ion-icon name="eye" item-start></ion-icon>
+        <ion-icon name="eye" color="bidColor" item-start></ion-icon>
         View Bids on Projects
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>
       <button ion-item>
-        <ion-icon name="share" item-start ></ion-icon>
+        <ion-icon name="share" color="shareColor" item-start ></ion-icon>
         Share Projects Details
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>
       <button ion-item>
-        <ion-icon name="send" item-start></ion-icon>
+        <ion-icon name="send" color="publishColor" item-start></ion-icon>
         Publish Projects
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>
       <button ion-item>
-        <ion-icon name="filing" item-start></ion-icon>
+        <ion-icon name="filing" color="cloudColor" item-start></ion-icon>
         Cloud Archive
         <ion-icon name="arrow-forward" item-end></ion-icon>
       </button>

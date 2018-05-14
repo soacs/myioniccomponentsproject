@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-navbar color="blueish">
+    <ion-title>
+      Recordings
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+
+  <ion-card>
+    <ion-card-content>
+      <ion-card-title>
+        <p>Record Requirements</p>
+      </ion-card-title>
+      <button ion-button primary (click)="stopRecording()" *ngIf="recording"><ion-icon name="mic-off"></ion-icon>&nbsp;&nbsp;Stop Recording</button>
+      <button ion-button primary (click)="startAnotherRecording()" *ngIf="!recording"><ion-icon name="mic"></ion-icon>&nbsp;&nbsp;Start Another Recording</button>
+      <ion-item>
+        Sound One
+        <button ion-button clear item-end large (click)="play()"><ion-icon name="play"></ion-icon></button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button ion-button clear item-end large (click)="play()"><ion-icon name="trash">&nbsp;&nbsp;</ion-icon></button>
+      </ion-item>
+      <ion-item>
+        Sound Two
+        <button ion-button clear item-end large (click)="play()"><ion-icon name="play"></ion-icon></button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button ion-button clear item-end large (click)="play()"><ion-icon name="trash">&nbsp;&nbsp;</ion-icon></button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-item>
+      <p>Position</p>
+      {{position}}
+    </ion-item>
+    <ion-item>
+      <p>view Duration</p>
+      <button ion-button clear item-start large (click)="getDuration()"><ion-icon name="time"></ion-icon>&nbsp;Get Duration</button>
+    </ion-item>
+    <ion-item>
+      <p>Duration:</p>
+      {{duration}}
+    </ion-item>
+
+    <ion-item>
+      <p>list items in Directory</p>
+      <button ion-button clear item-start large (click)="listDirItems()"><ion-icon name="list"></ion-icon>&nbsp;List Directory items</button>
+    </ion-item>
+    <ion-item>
+      <p>Items:</p>
+      {{items | json}}
+    </ion-item>
+
+    <ion-item>
+      <button ion-button clear item-start large (click)="playM4A()"><ion-icon name="mic"></ion-icon>&nbsp; Play Sound File</button>
+    </ion-item>
+
+    <ion-item>
+      <button ion-button item-center large round (click)="finishedAddingRecordings()"><ion-icon name="done-all"></ion-icon>&nbsp;Finished Recordings</button>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

@@ -5,6 +5,8 @@ import { GeneralPage } from '../general/general';
 import { ListPage } from '../list/list';
 import { SearchPage } from '../search/search';
 import { PublishPage } from '../publish/publish';
+import { PopoverController } from 'ionic-angular';
+import { PopoverPage } from '../popover/popover';
 
 /**
  * Generated class for the ProjectsPage page.
@@ -20,7 +22,26 @@ import { PublishPage } from '../publish/publish';
 })
 export class ProjectsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController) {
+  projectName: string;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public popoverCtrl: PopoverController) {
+  }
+
+  presentPopover() {
+    let popover = this.popoverCtrl.create(PopoverPage);
+    popover.onDidDismiss(data => {
+      console.log("presentPopover data is " + JSON.stringify(data));
+      this.projectName = data.name;
+      this.navCtrl.push(GeneralPage, data);
+    });
+
+    popover.present();
+
+  }
+
+  createProject() {
+    this.presentPopover();
+    console.log("popoverData = " + JSON.stringify(this.popoverData));
   }
 
   viewProjects() {
@@ -35,7 +56,7 @@ export class ProjectsPage {
     this.navCtrl.push(SearchPage);
   }
 
-  createProject() {
+  createActionSheetProject() {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Create Home Project',
       buttons: [

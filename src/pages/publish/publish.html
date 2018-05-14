@@ -8,10 +8,10 @@
     <p ion-text color="secondary">open projects</p>
   <ion-list>
     <ion-item-sliding *ngFor="let project  of projectItems" #slidingItem>
-      <ion-item>
+      <button ion-item >
         {{project}}
-        <ion-icon name="cloud-upload" item-end></ion-icon>
-      </ion-item>
+        <ion-icon name="cloud-upload" color="cloudColor" item-end></ion-icon>
+      </button>
       <ion-item-options side="right">
         <button ion-button (click)="deleteProject(project)" color="danger" >Delete</button>
         <button ion-button (click)="closeProject(slidingItem)">Close</button>

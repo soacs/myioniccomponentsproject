@@ -4,12 +4,15 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Media, MediaObject } from '@ionic-native/media';
 import { File } from '@ionic-native/file';
+import { RecordingsPage } from '../recordings/recordings';
 
 @Component({
   selector: 'page-general',
   templateUrl: 'general.html',
 })
 export class GeneralPage {
+
+  projectName: string;
 
   recording: boolean = false;
   filePath: string;
@@ -34,6 +37,7 @@ export class GeneralPage {
 
   constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
 
+    this.projectName = this.navParams.get('name');
     this.generalForm = this.formBuilder.group({
       bugetRange: [''],
       timeFrame: [''],
@@ -76,6 +80,11 @@ export class GeneralPage {
 
   playRecording(){
     this.audio.play();
+  }
+
+  addRecording(){
+    console.log("addRecording()");
+    this.navCtrl.push(RecordingsPage);
   }
 
   showAlert(message){
