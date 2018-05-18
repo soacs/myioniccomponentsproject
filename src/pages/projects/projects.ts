@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { ActionSheetController } from 'ionic-angular';
-import { GeneralPage } from '../general/general';
-import { ListPage } from '../list/list';
-import { SearchPage } from '../search/search';
-import { PublishPage } from '../publish/publish';
-import { PopoverController } from 'ionic-angular';
-import { PopoverPage } from '../popover/popover';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {ActionSheetController} from 'ionic-angular';
+import {GeneralPage} from '../general/general';
+import {ListPage} from '../list/list';
+import {SearchPage} from '../search/search';
+import {PublishPage} from '../publish/publish';
+import {PopoverController} from 'ionic-angular';
+import {PopoverPage} from '../popover/popover';
 
 /**
  * Generated class for the ProjectsPage page.
@@ -27,20 +27,31 @@ export class ProjectsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public popoverCtrl: PopoverController) {
   }
 
-  presentPopover() {
+  presentPopover(myEvent) {
     let popover = this.popoverCtrl.create(PopoverPage);
+
     popover.onDidDismiss(data => {
       console.log("presentPopover data is " + JSON.stringify(data));
       this.projectName = data.name;
       this.navCtrl.push(GeneralPage, data);
     });
 
-    popover.present();
+    let ev = {
+      target: {
+        getBoundingClientRect: () => {
+          return {
+            top: 20
+          };
+        }
+      }
+    }
+
+    popover.present({ev});
 
   }
 
-  createProject() {
-    this.presentPopover();
+  createProject(myEvent) {
+    this.presentPopover(myEvent);
     console.log("projectName = " + JSON.stringify(this.projectName));
   }
 
@@ -66,30 +77,30 @@ export class ProjectsPage {
             this.navCtrl.push(GeneralPage);
             console.log('General clicked');
           }
-        },{
+        }, {
           text: 'Kitchen',
           handler: () => {
             console.log('Kitchen clicked');
           }
         }
-        ,{
+        , {
           text: 'Bedroom',
           handler: () => {
             console.log('Bedroom clicked');
           }
         }
-        ,{
+        , {
           text: 'Living Room',
           handler: () => {
             console.log('Living Room clicked');
           }
         }
-        ,{
+        , {
           text: 'Dining Room',
           handler: () => {
             console.log('Dining Room clicked');
           }
-        },{
+        }, {
           text: 'Cancel',
           role: 'cancel',
           handler: () => {
@@ -101,7 +112,7 @@ export class ProjectsPage {
     actionSheet.present();
   }
 
-  listProjects(){
+  listProjects() {
     console.log('listProjects() called');
   }
 
