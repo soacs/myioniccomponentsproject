@@ -1,0 +1,54 @@
+
+
+let project: any =
+{
+"projectName": "bedroomCloset",
+"buget": "600",
+"timeframe": "1 week",
+"immediate": true,
+"local": true,
+"supplies": true,
+"installation": true,
+"licensed": true,
+"quote": true,
+"call": false,
+"photos": [ "image1.png", "image2.png", "image3.png" ],
+"videos": [ "test1.mp4", "test2.mp4"],
+"audios": ["test1.mp3", "test1.mp3", "test1.mp3", "test1.mp3"],
+"status": "Open"
+};
+
+let projects: Array<any> = [
+{
+"projectName": "bedroomCloset",
+"buget": "600",
+"timeframe": "1 week",
+"immediate": true,
+"local": true,
+"supplies": true,
+"installation": true,
+"licensed": true,
+"quote": true,
+"call": false,
+"photos": [ "image1.png", "image2.png", "image3.png" ],
+"videos": [ "test1.mp4", "test2.mp4"],
+"audios": ["test1.mp3", "test1.mp3", "test1.mp3", "test1.mp3"],
+"status": "Open"
+},
+{
+"projectName": "guestroomCarpet",
+"buget": "600",
+"timeframe": "1 week",
+"immediate": true,
+"local": true,
+"supplies": true,
+"installation": true,
+"licensed": true,
+"quote": true,
+"call": false,
+"photos": [ "image1.png", "image2.png", "image3.png" ],
+"videos": [ "test1.mp4", "test2.mp4"],
+"audios": ["test1.mp3", "test1.mp3", "test1.mp3", "test1.mp3"],
+"status": "Closed"
+}
+]

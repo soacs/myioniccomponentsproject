@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import { Media, MediaObject } from '@ionic-native/media';
 import { File } from '@ionic-native/file';
 import { RecordingsPage } from '../recordings/recordings';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-general',
@@ -13,33 +14,35 @@ import { RecordingsPage } from '../recordings/recordings';
 export class GeneralPage {
 
   projectName: string;
-
-  recording: boolean = false;
-  filePath: string;
-  fileName: string;
-  audio: MediaObject;
-  audioList: any[] = [];
-
-  generalForm: FormGroup;
-
-  bugetRange: string;
-  timeFrame: string;
-  photos: any;
-  base64Image: string;
-
   // requirements
+  buget: string;
+  timeFrame: string;
   immediate: boolean = false;
   local: boolean = false;
   supplies: boolean = false;
   installation: boolean = false;
   picture: boolean = false;
   licensed: boolean = false;
+  photos: Array<string>;
+  audios: Array<string>;
+  videos: Array<string>;
 
-  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
+  // needed members
+  recording: boolean = false;
+  filePath: string;
+  fileName: string;
+  audio: MediaObject;
+  audioList: any[] = [];
+  base64Image: string;
+
+  // form
+  generalForm: FormGroup;
+
+  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage) {
 
     this.projectName = this.navParams.get('name');
     this.generalForm = this.formBuilder.group({
-      bugetRange: [''],
+      buget: [''],
       timeFrame: [''],
       immediate: [''],
       local: [''],
@@ -49,7 +52,16 @@ export class GeneralPage {
       licensed: ['']
     });
 
-    this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory exists')).catch(err => console.log('Directory does not exist'));
+    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log('Directory ${projectName} already exists')).catch(err => {
+        console.log('Directory ${projectName} does not exist, calling createDir...');
+        this.file.createDir(this.file.dataDirectory, this.projectName, false).then(() => {
+          console.log("we just created the directory ${projectName}");
+        }).catch((err) => {
+          console.error("error trying to create directory ${projectName}", err);
+        });
+      }
+    );
+    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log('Directory exists')).catch(err => console.log('Directory does not exist'));
 
   }
 
@@ -102,7 +114,26 @@ export class GeneralPage {
 
   save() {
     console.log('save() called');
-      let toast = this.toastCtrl.create({
+    let project =  {
+      "projectName": this.projectName,
+      "buget": this.budget,
+      "timeframe": this.timeFrame,
+      "immediate": this.immediate,
+      "local": this.local,
+      "supplies": this.supplies,
+      "installation": this.installation,
+      "licensed": this.license,
+      "quote": this.quote,
+      "call": this.call,
+      "photos": this.photos,
+      "videos": this.videos,
+      "audios": this.audios,
+      "status": "Open"
+    };
+
+    this.storage.set('project', project);
+
+    let toast = this.toastCtrl.create({
       message: ' Project was saved successfully',
       duration: 2000,
       position: 'middle'

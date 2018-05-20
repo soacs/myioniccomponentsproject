@@ -34,11 +34,11 @@
 
       <ion-item>
 
-        <ion-range min="100" max="1000" step="10" [(ngModel)]="bugetRange" color="secondary" formControlName="bugetRange">
+        <ion-range min="100" max="1000" step="10" [(ngModel)]="buget" color="secondary" formControlName="buget">
           <ion-label range-left>$100</ion-label>
           <ion-label range-right>$1000</ion-label>
         </ion-range>
-        <ion-label>APPROXIMATE BUDGET: {{bugetRange || 100 | currency}}</ion-label>
+        <ion-label>APPROXIMATE BUDGET: {{buget || 100 | currency}}</ion-label>
       </ion-item>
 
       <ion-item>
