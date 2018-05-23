@@ -4,6 +4,7 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Media, MediaObject } from '@ionic-native/media';
 import { File } from '@ionic-native/file';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { RecordingsPage } from '../recordings/recordings';
 import { Storage } from '@ionic/storage';
 
@@ -14,8 +15,12 @@ import { Storage } from '@ionic/storage';
 export class GeneralPage {
 
   projectName: string;
+  projectDirectory: string;
+  devicePlatform: string;
+  mediaDirectory: string;
+
   // requirements
-  buget: string;
+  budget: string;
   timeFrame: string;
   immediate: boolean = false;
   local: boolean = false;
@@ -23,6 +28,8 @@ export class GeneralPage {
   installation: boolean = false;
   picture: boolean = false;
   licensed: boolean = false;
+  call: boolean = false;
+  quote: boolean = false;
   photos: Array<string>;
   audios: Array<string>;
   videos: Array<string>;
@@ -32,8 +39,8 @@ export class GeneralPage {
   filePath: string;
   fileName: string;
   audio: MediaObject;
-  audioList: any[] = [];
   base64Image: string;
+  devicePlatform: string;
 
   // form
   generalForm: FormGroup;
@@ -41,28 +48,46 @@ export class GeneralPage {
   constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage) {
 
     this.projectName = this.navParams.get('name');
+    console.log('projectName = ' + this.projectName);
+
+    this.mediaDirectory = this.storage.get('mediaDirectory');
+    this.devicePlatform = this.storage.get('devicePlatform');
+    this.projectDirectory = this.mediaDirectory + '/' + this.projectName;
+    console.log("this.mediaDirectory = " + this.mediaDirectory);
+    console.log("this.devicePlatform = " + this.devicePlatform);
+    console.log("this.projectDirectory = " + this.projectDirectory);
+    this.storage.set('projectDirectory', this.projectDirectory);
+
     this.generalForm = this.formBuilder.group({
-      buget: [''],
+      budget: [''],
       timeFrame: [''],
       immediate: [''],
       local: [''],
       supplies: [''],
       installation: [''],
       picture: [''],
-      licensed: ['']
+      licensed: [''],
+      call: [''],
+      quote: ['']
     });
 
-    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log('Directory ${projectName} already exists')).catch(err => {
-        console.log('Directory ${projectName} does not exist, calling createDir...');
+    console.log("Checking project directory on platform = " + this.devicePlatform);
+    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log(`Directory ' + this.projectName + ' already exists`)).catch(err => {
+        console.log('Directory ' + this.projectName + ' does not exist, so now calling createDir...');
         this.file.createDir(this.file.dataDirectory, this.projectName, false).then(() => {
-          console.log("we just created the directory ${projectName}");
+          console.log('we just created the directory ' + this.projectName);
         }).catch((err) => {
-          console.error("error trying to create directory ${projectName}", err);
+          console.error('error trying to create directory ' + this.projectName, err);
         });
       }
     );
-    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log('Directory exists')).catch(err => console.log('Directory does not exist'));
 
+    this.mediaDirectory = this.file.dataDirectory + this.projectName;
+    this.filePath = this.mediaDirectory + this.fileName;
+
+    console.log("this.file.dataDirectory = " + this.file.dataDirectory);
+    console.log("this.mediaDirectory = " + this.mediaDirectory);
+    console.log("this.filePath = " + this.filePath);
   }
 
   startRecording(){
@@ -83,11 +108,11 @@ export class GeneralPage {
 
   stopRecording(){
       this.audio.stopRecord();
-      let data = { filename: this.fileName };
-      this.audioList.push(data);
-      localStorage.setItem("audiolist", JSON.stringify(this.audioList));
+      let data: any = { filename: this.fileName };
+      this.audios.push(data);
+      localStorage.setItem("audios", JSON.stringify(this.audios));
       this.recording = false;
-      this.getAudioList();
+      this.getAudios();
   }
 
   playRecording(){
@@ -116,13 +141,13 @@ export class GeneralPage {
     console.log('save() called');
     let project =  {
       "projectName": this.projectName,
-      "buget": this.budget,
-      "timeframe": this.timeFrame,
+      "budget": this.budget,
+      "timeFrame": this.timeFrame,
       "immediate": this.immediate,
       "local": this.local,
       "supplies": this.supplies,
       "installation": this.installation,
-      "licensed": this.license,
+      "licensed": this.licensed,
       "quote": this.quote,
       "call": this.call,
       "photos": this.photos,
@@ -218,12 +243,12 @@ export class GeneralPage {
   }
 
   ionViewWillEnter() {
-    this.getAudioList();
+    this.getAudios();
   }
-  getAudioList() {
+  getAudios() {
     if(localStorage.getItem("audiolist")) {
-      this.audioList = JSON.parse(localStorage.getItem("audiolist"));
-      console.log(this.audioList);
+      this.audios = JSON.parse(localStorage.getItem("audiolist"));
+      console.log(this.audios);
     }
   }
 
@@ -237,5 +262,15 @@ export class GeneralPage {
     }
     this.audio.play();
     this.audio.setVolume(0.8);
+  }
+
+  listDirItems(path, dirName) {
+    this.file.listDir(path, dirName).then((entries) => {
+      console.log("listDir - inside path = " + path);
+      console.log("listDir - dirName = " + dirName);
+      console.log("listDir - directory Items = " + JSON.stringify(entries));
+    }).catch((error) => {
+      console.log('error reading,', error);
+    });
   }
 }
