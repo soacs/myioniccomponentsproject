@@ -2,11 +2,11 @@ import {Component} from '@angular/core';
 import {NavController, NavParams, AlertController, ToastController, LoadingController, Platform} from 'ionic-angular';
 import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import { Media, MediaObject } from '@ionic-native/media';
-import { File } from '@ionic-native/file';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { RecordingsPage } from '../recordings/recordings';
-import { Storage } from '@ionic/storage';
+import {Media, MediaObject} from '@ionic-native/media';
+import {File} from '@ionic-native/file';
+import {FileTransfer, FileUploadOptions, FileTransferObject} from '@ionic-native/file-transfer';
+import {RecordingsPage} from '../recordings/recordings';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'page-general',
@@ -15,9 +15,9 @@ import { Storage } from '@ionic/storage';
 export class GeneralPage {
 
   projectName: string;
+  projectsDirectory: any;
   projectDirectory: string;
-  devicePlatform: string;
-  mediaDirectory: string;
+  devicePlatform: any;
 
   // requirements
   budget: string;
@@ -40,23 +40,28 @@ export class GeneralPage {
   fileName: string;
   audio: MediaObject;
   base64Image: string;
-  devicePlatform: string;
 
   // form
   generalForm: FormGroup;
 
-  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl : AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage) {
-
+  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage) {
+    console.log('## BEGIN CONSTRUCTOR');
     this.projectName = this.navParams.get('name');
-    console.log('projectName = ' + this.projectName);
+    console.log('## projectName = ' + this.projectName);
+    this.storage.get('projectsDirectory').then((val) => {
+      this.projectsDirectory = val;
+      this.projectDirectory = this.projectsDirectory + this.projectName + '/';
+      console.log('## this.file.dataDirectory = ' + this.file.dataDirectory);
+      console.log('## this.projectsDirectory = ' + this.projectsDirectory);
+      console.log('## this.projectDirectory = ' + this.projectDirectory);
+      console.log('## Store projectDirectory in storage');
+      this.storage.set('projectDirectory', this.projectDirectory);
+    });
 
-    this.mediaDirectory = this.storage.get('mediaDirectory');
-    this.devicePlatform = this.storage.get('devicePlatform');
-    this.projectDirectory = this.mediaDirectory + '/' + this.projectName;
-    console.log("this.mediaDirectory = " + this.mediaDirectory);
-    console.log("this.devicePlatform = " + this.devicePlatform);
-    console.log("this.projectDirectory = " + this.projectDirectory);
-    this.storage.set('projectDirectory', this.projectDirectory);
+    this.storage.get('devicePlatform').then((val) => {
+      this.devicePlatform = val;
+      console.log('## this.devicePlatform = ' + this.devicePlatform);
+    });
 
     this.generalForm = this.formBuilder.group({
       budget: [''],
@@ -70,34 +75,34 @@ export class GeneralPage {
       call: [''],
       quote: ['']
     });
+    console.log('## END CONSTRUCTOR');
+  }
 
-    console.log("Checking project directory on platform = " + this.devicePlatform);
-    this.file.checkDir(this.file.dataDirectory, this.projectName).then(() => console.log(`Directory ' + this.projectName + ' already exists`)).catch(err => {
-        console.log('Directory ' + this.projectName + ' does not exist, so now calling createDir...');
-        this.file.createDir(this.file.dataDirectory, this.projectName, false).then(() => {
-          console.log('we just created the directory ' + this.projectName);
+  ionViewDidEnter() {
+    console.log('## BEGIN ionViewDidEnter');
+    console.log('## this.projectDirectory = ' + this.projectDirectory);
+    console.log('## Checking projectDirectory = ' + this.projectDirectory + ' on platform = ' + this.devicePlatform);
+    this.file.checkDir(this.projectsDirectory, this.projectName).then(() => console.log(`Directory ' + this.projectName + ' already exists`)).catch(err => {
+        console.log('## Directory ' + this.projectName + ' does not exist, so now calling createDir...');
+        this.file.createDir(this.projectsDirectory, this.projectName, false).then(() => {
+          console.log('## we just created the directory ' + this.projectName);
         }).catch((err) => {
           console.error('error trying to create directory ' + this.projectName, err);
         });
       }
     );
-
-    this.mediaDirectory = this.file.dataDirectory + this.projectName;
-    this.filePath = this.mediaDirectory + this.fileName;
-
-    console.log("this.file.dataDirectory = " + this.file.dataDirectory);
-    console.log("this.mediaDirectory = " + this.mediaDirectory);
-    console.log("this.filePath = " + this.filePath);
+    this.listDirItems(this.file.dataDirectory, 'projects');
+    console.log('## END ionViewDidEnter');
   }
 
-  startRecording(){
+  startRecording() {
 
     if (this.platform.is('ios')) {
-      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+      this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
       this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
       this.audio = this.media.create(this.filePath);
     } else if (this.platform.is('android')) {
-      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+      this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
       this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
       this.audio = this.media.create(this.filePath);
     }
@@ -106,25 +111,25 @@ export class GeneralPage {
 
   }
 
-  stopRecording(){
-      this.audio.stopRecord();
-      let data: any = { filename: this.fileName };
-      this.audios.push(data);
-      localStorage.setItem("audios", JSON.stringify(this.audios));
-      this.recording = false;
-      this.getAudios();
+  stopRecording() {
+    this.audio.stopRecord();
+    let data: any = {filename: this.fileName};
+    this.audios.push(data);
+    localStorage.setItem('audios', JSON.stringify(this.audios));
+    this.recording = false;
+    this.getAudios();
   }
 
-  playRecording(){
+  playRecording() {
     this.audio.play();
   }
 
-  addRecording(){
-    console.log("addRecording()");
+  addRecording() {
+    console.log('## addRecording()');
     this.navCtrl.push(RecordingsPage);
   }
 
-  showAlert(message){
+  showAlert(message) {
     let alert = this.alertCtrl.create({
       title: 'Error',
       subTitle: message,
@@ -134,26 +139,26 @@ export class GeneralPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad GeneralPage');
+    console.log('## ionViewDidLoad GeneralPage');
   }
 
   save() {
-    console.log('save() called');
-    let project =  {
-      "projectName": this.projectName,
-      "budget": this.budget,
-      "timeFrame": this.timeFrame,
-      "immediate": this.immediate,
-      "local": this.local,
-      "supplies": this.supplies,
-      "installation": this.installation,
-      "licensed": this.licensed,
-      "quote": this.quote,
-      "call": this.call,
-      "photos": this.photos,
-      "videos": this.videos,
-      "audios": this.audios,
-      "status": "Open"
+    console.log('## save() called');
+    let project = {
+      'projectName': this.projectName,
+      'budget': this.budget,
+      'timeFrame': this.timeFrame,
+      'immediate': this.immediate,
+      'local': this.local,
+      'supplies': this.supplies,
+      'installation': this.installation,
+      'licensed': this.licensed,
+      'quote': this.quote,
+      'call': this.call,
+      'photos': this.photos,
+      'videos': this.videos,
+      'audios': this.audios,
+      'status': 'Open'
     };
 
     this.storage.set('project', project);
@@ -167,51 +172,51 @@ export class GeneralPage {
   }
 
   cancel() {
-    console.log('cancel() called');
+    console.log('## cancel() called');
     this.generalForm.reset();
     this.navCtrl.pop();
   }
 
   ngOnInit() {
-    this.photos = ["assets/imgs/window_project.jpg","assets/imgs/handrail_project.jpg"];
+    this.photos = ['assets/imgs/window_project.jpg', 'assets/imgs/handrail_project.jpg'];
   }
 
   presentLoading() {
     let loader = this.loadingCtrl.create({
-      content: "Please wait while submitting project...",
+      content: 'Please wait while submitting project...',
       duration: 3000
     });
     loader.present();
 
     loader.onDidDismiss(() => {
-      console.log('Dismissed loading');
+      console.log('## Dismissed loading');
       this.navCtrl.pop();
     });
   }
 
   onSubmit(f: FormGroup) {
     this.presentLoading();
-    console.log("f.value = " + JSON.stringify(f.value));
+    console.log('## f.value = ' + JSON.stringify(f.value));
     if (this.generalForm.valid) {
-      console.log("generalForm submitted!");
+      console.log('## generalForm submitted!');
       this.generalForm.reset();
     }
   }
 
   takePhoto() {
-    console.log("takePhoto() called");
+    console.log('## takePhoto() called');
     const options: CameraOptions = {
       quality: 50, // picture quality
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    console.log("Lets call this.camera.getPicture(options)");
+    console.log('## Lets call this.camera.getPicture(options)');
 
     this.camera.getPicture(options).then((imageData) => {
 
-      console.log("INSIDE PROMISE of camera.getPicture(options)...................................................");
-      this.base64Image = "data:image/jpeg;base64," + imageData;
+      console.log('## INSIDE PROMISE of camera.getPicture(options)...................................................');
+      this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
     }, (err) => {
@@ -220,7 +225,7 @@ export class GeneralPage {
   }
 
   deletePhoto(index) {
-    console.log("Delete Photo");
+    console.log('## Delete Photo');
     let confirm = this.alertCtrl.create({
       title: 'Sure you want to delete this photo? There is NO undo!',
       message: '',
@@ -228,12 +233,12 @@ export class GeneralPage {
         {
           text: 'No',
           handler: () => {
-            console.log('Disagree clicked');
+            console.log('## Disagree clicked');
           }
         }, {
           text: 'Yes',
           handler: () => {
-            console.log('Agree clicked');
+            console.log('## Agree clicked');
             this.photos.splice(index, 1);
           }
         }
@@ -245,14 +250,15 @@ export class GeneralPage {
   ionViewWillEnter() {
     this.getAudios();
   }
+
   getAudios() {
-    if(localStorage.getItem("audiolist")) {
-      this.audios = JSON.parse(localStorage.getItem("audiolist"));
+    if (localStorage.getItem('audiolist')) {
+      this.audios = JSON.parse(localStorage.getItem('audiolist'));
       console.log(this.audios);
     }
   }
 
-  playAudio(file,idx) {
+  playAudio(file, idx) {
     if (this.platform.is('ios')) {
       this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + file;
       this.audio = this.media.create(this.filePath);
@@ -266,11 +272,19 @@ export class GeneralPage {
 
   listDirItems(path, dirName) {
     this.file.listDir(path, dirName).then((entries) => {
-      console.log("listDir - inside path = " + path);
-      console.log("listDir - dirName = " + dirName);
-      console.log("listDir - directory Items = " + JSON.stringify(entries));
+      console.log('## listDir - inside path = ' + path);
+      console.log('## listDir - dirName = ' + dirName);
+      console.log('## listDir - directory Items = ' + JSON.stringify(entries));
     }).catch((error) => {
-      console.log('error reading,', error);
+      console.log('## error reading,', error);
     });
+  }
+
+  async getProjectsDirectoryAsync() {
+    return await this.storage.get('projectsDirectory');
+  }
+
+  async getDevicePlatformAsync() {
+    return await this.storage.get('devicePlatform');
   }
 }

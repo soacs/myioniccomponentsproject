@@ -11,8 +11,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 })
 export class MyApp {
   rootPage:any = TabsPage;
-  projectsDirectory: string = 'projects';
-  mediaDirectory: string;
+  projectsDirectoryName: string = 'projects';
+  projectsDirectory: string;
   devicePlatform: string;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private file: File,  private storage: Storage) {
@@ -22,33 +22,38 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
 
-      if (this.platform.is('ios')) {
+      if (platform.is('ios')) {
+        console.log("PLATFORM IS IOS");
         this.devicePlatform = 'ios';
-      } else if (this.platform.is('android')) {
+      } else if (platform.is('android')) {
+        console.log("PLATFORM IS ANDRIOD");
+        this.devicePlatform = 'android';
+      } else {
+        console.log("PLATFORM IS ELSE");
         this.devicePlatform = 'android';
       }
 
-      this.file.checkDir(this.file.dataDirectory, this.projectsDirectory).then(() => console.log(`Directory ' + this.projectsDirectory + ' already exists`)).catch(err => {
-          console.log('Directory ' + this.projectsDirectory + ' does not exist, so now calling createDir...');
-          this.file.createDir(this.file.dataDirectory, this.projectsDirectory, false).then(() => {
-            console.log('we just created the directory ' + this.projectsDirectory);
+      this.file.checkDir(this.file.dataDirectory, this.projectsDirectoryName).then(() => console.log(`Directory named ' + this.projectsDirectoryName + ' already exists`)).catch(err => {
+          console.log('Directory ' + this.projectsDirectoryName + ' does not exist, so now calling createDir...');
+          this.file.createDir(this.file.dataDirectory, this.projectsDirectoryName, false).then(() => {
+            console.log('we just created the directory named ' + this.projectsDirectoryName);
           }).catch((err) => {
-            console.error('error trying to create directory ' + this.projectsDirectory, err);
+            console.error('error trying to create directory named ' + this.projectsDirectoryName, err);
           });
         }
       );
+
+      this.projectsDirectory = this.file.dataDirectory + this.projectsDirectoryName + '/';
+
+      console.log("this.file.dataDirectory = " + this.file.dataDirectory);
+      console.log("this.projectsDirectory = " + this.projectsDirectory);
+      console.log("this.devicePlatform = " + this.devicePlatform);
+
+      console.log("Store dataDirectory, projectsDirectory and devicePlatform into storage");
+
+      this.storage.set('projectsDirectory', this.projectsDirectory);
+      this.storage.set('devicePlatform', this.devicePlatform);
     });
-
-    this.mediaDirectory = this.file.dataDirectory + this.projectsDirectory;
-
-    console.log("this.file.dataDirectory = " + this.file.dataDirectory);
-    console.log("this.mediaDirectory = " + this.mediaDirectory);
-    console.log("this.devicePlatform = " + this.devicePlatform);
-    console.log("Store dataDirectory, mediaDirectory and devicePlatform into storage");
-    this.storage.set('projectsDirectory', this.projectsDirectory);
-    this.storage.set('mediaDirectory', this.mediaDirectory);
-    this.storage.set('devicePlatform', this.devicePlatform);
-
 
   }
 }
