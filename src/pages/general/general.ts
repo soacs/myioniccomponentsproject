@@ -4,9 +4,9 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Media, MediaObject} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
-import {FileTransfer, FileUploadOptions, FileTransferObject} from '@ionic-native/file-transfer';
 import {RecordingsPage} from '../recordings/recordings';
 import {Storage} from '@ionic/storage';
+import {ActionSheetController} from 'ionic-angular';
 
 @Component({
   selector: 'page-general',
@@ -36,16 +36,17 @@ export class GeneralPage {
 
   // needed members
   recording: boolean = false;
-  filePath: string;
+  myFilePath: string;
   fileName: string;
   audio: MediaObject;
   base64Image: string;
+  lastImage: string;
 
   // form
   generalForm: FormGroup;
 
-  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage) {
-    console.log('## BEGIN CONSTRUCTOR');
+  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage,  public actionSheetCtrl: ActionSheetController) {
+    console.log('## BEGIN GeneralPage constructor');
     this.projectName = this.navParams.get('name');
     console.log('## projectName = ' + this.projectName);
     this.storage.get('projectsDirectory').then((val) => {
@@ -75,7 +76,7 @@ export class GeneralPage {
       call: [''],
       quote: ['']
     });
-    console.log('## END CONSTRUCTOR');
+    console.log('## END GeneralPage constructor');
   }
 
   ionViewDidEnter() {
@@ -97,18 +98,23 @@ export class GeneralPage {
 
   startRecording() {
 
-    if (this.platform.is('ios')) {
-      this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
-      this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
-      this.audio = this.media.create(this.filePath);
-    } else if (this.platform.is('android')) {
-      this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
-      this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
-      this.audio = this.media.create(this.filePath);
-    }
+    this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
+    this.myFilePath = this.projectDirectory + this.fileName;
+    this.audio = this.media.create(this.myFilePath);
     this.audio.startRecord();
     this.recording = true;
 
+    /*  if (this.platform.is('ios')) {
+     this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
+     this.myFilePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
+     this.audio = this.media.create(this.myFilePath);
+     } else if (this.platform.is('android')) {
+     this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
+     this.myFilePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
+     this.audio = this.media.create(this.myFilePath);
+     }
+     this.audio.startRecord();
+     this.recording = true; */
   }
 
   stopRecording() {
@@ -161,6 +167,17 @@ export class GeneralPage {
       'status': 'Open'
     };
 
+    this.storage.get('projects').then(val => {
+      console.log('projects taken out of storage');
+      console.log('projects.length = ' + val.length);
+      if (val !== null) {
+        console.log('push saved project into projects');
+        val.push(project);
+        console.log('set projects in storage again.');
+        console.log('projects = ' + JSON.stringify(val));
+        this.storage.set('projects', val);
+      }
+    });
     this.storage.set('project', project);
 
     let toast = this.toastCtrl.create({
@@ -219,10 +236,67 @@ export class GeneralPage {
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
+      let imagePath = imageData;
+      console.log("## picture imagePath = " + imagePath);
+      let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+      console.log("## picture currentName = " + currentName);
+      let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+      console.log("## picture correctPath = " + correctPath);
+      this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
     }, (err) => {
       console.log(err);
     });
   }
+
+  public takePicture() {
+    // Create options for the Camera Dialog
+    var options = {
+      quality: 100,
+      sourceType: this.camera.PictureSourceType.CAMERA,
+      saveToPhotoAlbum: false,
+      correctOrientation: true
+    };
+
+    // Get the data of an image
+    this.camera.getPicture(options).then((imagePath) => {
+      console.log("## picture imagePath = " + imagePath);
+      let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+      console.log("## picture currentName = " + currentName);
+      let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+      console.log("## picture correctPath = " + correctPath);
+      console.log('## lets call copyFIleToLocalPath');
+      this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
+      this.listDirItems(this.file.dataDirectory, 'projects');
+    }, (err) => {
+      console.log('Error while selecting image.');
+    });
+  }
+
+  // Create a new name for the image
+  private createFileName() {
+    console.log('## BEGIN createFileName()');
+    let d = new Date(),
+      n = d.getTime(),
+      newFileName = n + ".jpg";
+    console.log('## newFileName = ' + newFileName);
+    console.log('## END createFileName()');
+    return newFileName;
+  }
+
+// Copy the image to a local folder
+  private copyFileToLocalDir(namePath, currentName, newFileName) {
+    console.log('## BEGIN copyFileToLocalDir()');
+    this.file.copyFile(namePath, currentName, this.projectDirectory, newFileName).then(success => {
+      this.lastImage = newFileName;
+      console.log('## lastImage = ' + this.lastImage);
+      console.log('## list final directory contents');
+      this.listDirItems(this.file.dataDirectory, 'projects');
+    }, error => {
+      console.log('Error while storing file. error = ' + error);
+    });
+    console.log('## END copyFileToLocalDir()');
+  }
+
 
   deletePhoto(index) {
     console.log('## Delete Photo');
@@ -260,11 +334,11 @@ export class GeneralPage {
 
   playAudio(file, idx) {
     if (this.platform.is('ios')) {
-      this.filePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + file;
-      this.audio = this.media.create(this.filePath);
+      this.myFilePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + file;
+      this.audio = this.media.create(this.myFilePath);
     } else if (this.platform.is('android')) {
-      this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + file;
-      this.audio = this.media.create(this.filePath);
+      this.myFilePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + file;
+      this.audio = this.media.create(this.myFilePath);
     }
     this.audio.play();
     this.audio.setVolume(0.8);
@@ -287,4 +361,50 @@ export class GeneralPage {
   async getDevicePlatformAsync() {
     return await this.storage.get('devicePlatform');
   }
+
+  createActionSheetProject() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Create Home Project',
+      buttons: [
+        {
+          text: 'General',
+          handler: () => {
+            this.navCtrl.push(GeneralPage);
+            console.log('General clicked');
+          }
+        }, {
+          text: 'Kitchen',
+          handler: () => {
+            console.log('Kitchen clicked');
+          }
+        }
+        , {
+          text: 'Bedroom',
+          handler: () => {
+            console.log('Bedroom clicked');
+          }
+        }
+        , {
+          text: 'Living Room',
+          handler: () => {
+            console.log('Living Room clicked');
+          }
+        }
+        , {
+          text: 'Dining Room',
+          handler: () => {
+            console.log('Dining Room clicked');
+          }
+        }, {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
 }

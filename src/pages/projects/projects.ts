@@ -1,19 +1,12 @@
 import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {ActionSheetController} from 'ionic-angular';
 import {GeneralPage} from '../general/general';
 import {ListPage} from '../list/list';
 import {SearchPage} from '../search/search';
 import {PublishPage} from '../publish/publish';
 import {PopoverController} from 'ionic-angular';
 import {PopoverPage} from '../popover/popover';
-
-/**
- * Generated class for the ProjectsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {Storage} from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -23,8 +16,19 @@ import {PopoverPage} from '../popover/popover';
 export class ProjectsPage {
 
   projectName: string;
+  projectCount: number;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public popoverCtrl: PopoverController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,  private storage: Storage) {
+    console.log('## BEGIN ProjectsPage constructor');
+    this.storage.get('projects').then(val=>{
+      if(val !== null){
+        this.projectCount = val.length;
+        console.log('projectCount = ' + val.length);
+      } else {
+        console.log('## ERROR projects were not found in storage!');
+      }
+    });
+    console.log('## END ProjectsPage constructor');
   }
 
   presentPopover(myEvent) {
@@ -45,9 +49,7 @@ export class ProjectsPage {
         }
       }
     }
-
     popover.present({ev});
-
   }
 
   createProject(myEvent) {
@@ -67,50 +69,6 @@ export class ProjectsPage {
     this.navCtrl.push(SearchPage);
   }
 
-  createActionSheetProject() {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Create Home Project',
-      buttons: [
-        {
-          text: 'General',
-          handler: () => {
-            this.navCtrl.push(GeneralPage);
-            console.log('General clicked');
-          }
-        }, {
-          text: 'Kitchen',
-          handler: () => {
-            console.log('Kitchen clicked');
-          }
-        }
-        , {
-          text: 'Bedroom',
-          handler: () => {
-            console.log('Bedroom clicked');
-          }
-        }
-        , {
-          text: 'Living Room',
-          handler: () => {
-            console.log('Living Room clicked');
-          }
-        }
-        , {
-          text: 'Dining Room',
-          handler: () => {
-            console.log('Dining Room clicked');
-          }
-        }, {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
-  }
 
   listProjects() {
     console.log('listProjects() called');
@@ -119,5 +77,7 @@ export class ProjectsPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProjectsPage');
   }
-
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter ProjectsPage');
+  }
 }
