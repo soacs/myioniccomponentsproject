@@ -76,18 +76,12 @@
         <ion-radio value="Other"></ion-radio>
       </ion-item>
     </ion-list>
-    <button ion-button round (click)="takePhoto()">
-      <ion-icon name="camera" padding-right></ion-icon>
-      Take Photo
-    </button>
+
+
+      <ion-icon name="camera" large padding-right (click)="takePhoto()">Take Photo</ion-icon>
+
     <ion-grid>
       <ion-row>
-        <ion-col col-6>
-          <ion-card class="block">
-            <ion-icon name="trash" class="deleteIcon"></ion-icon>
-            <img src="assets/imgs/window_project.jpg"/>
-          </ion-card>
-        </ion-col>
         <ion-col col-6 *ngFor="let photo of photos; let id = index">
           <ion-card class="block">
             <ion-icon name="trash" class="deleteIcon" (click)="deletePhoto(id)"></ion-icon>

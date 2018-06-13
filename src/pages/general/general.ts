@@ -4,6 +4,7 @@ import {Camera, CameraOptions} from '@ionic-native/camera';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Media, MediaObject} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
+import {FilePath} from '@ionic-native/file-path';
 import {RecordingsPage} from '../recordings/recordings';
 import {Storage} from '@ionic/storage';
 import {ActionSheetController} from 'ionic-angular';
@@ -45,7 +46,7 @@ export class GeneralPage {
   // form
   generalForm: FormGroup;
 
-  constructor(private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage,  public actionSheetCtrl: ActionSheetController) {
+  constructor(private filePath: FilePath, private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage,  public actionSheetCtrl: ActionSheetController) {
     console.log('## BEGIN GeneralPage constructor');
     this.projectName = this.navParams.get('name');
     console.log('## projectName = ' + this.projectName);
@@ -231,8 +232,9 @@ export class GeneralPage {
     console.log('## Lets call this.camera.getPicture(options)');
 
     this.camera.getPicture(options).then((imageData) => {
-
-      console.log('## INSIDE PROMISE of camera.getPicture(options)...................................................');
+      let cachedFile = this.filePath.resolveNativePath(imageData);
+       //console.log("## filePath = " + JSON.stringify(this.filePath.resolveNativePath(imageData)));
+      console.log("## cached filePath = " + cachedFile);
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
