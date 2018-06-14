@@ -50,6 +50,7 @@ export class GeneralPage {
     console.log('## BEGIN GeneralPage constructor');
     this.projectName = this.navParams.get('name');
     console.log('## projectName = ' + this.projectName);
+    console.log('## createAudioFileName = ' + this.createAudioFileName());
     this.storage.get('projectsDirectory').then((val) => {
       this.projectsDirectory = val;
       this.projectDirectory = this.projectsDirectory + this.projectName + '/';
@@ -136,6 +137,10 @@ export class GeneralPage {
     this.navCtrl.push(RecordingsPage);
   }
 
+  addLocalrecording(){
+
+  }
+
   showAlert(message) {
     let alert = this.alertCtrl.create({
       title: 'Error',
@@ -196,7 +201,7 @@ export class GeneralPage {
   }
 
   ngOnInit() {
-    this.photos = ['assets/imgs/window_project.jpg', 'assets/imgs/handrail_project.jpg'];
+    this.photos = [];
   }
 
   presentLoading() {
@@ -230,49 +235,18 @@ export class GeneralPage {
       mediaType: this.camera.MediaType.PICTURE
     }
     console.log('## Lets call this.camera.getPicture(options)');
-
     this.camera.getPicture(options).then((imageData) => {
       let cachedFile = this.filePath.resolveNativePath(imageData);
-       //console.log("## filePath = " + JSON.stringify(this.filePath.resolveNativePath(imageData)));
       console.log("## cached filePath = " + cachedFile);
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
-      let imagePath = imageData;
-      console.log("## picture imagePath = " + imagePath);
-      let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-      console.log("## picture currentName = " + currentName);
-      let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-      console.log("## picture correctPath = " + correctPath);
-      this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
+
     }, (err) => {
       console.log(err);
     });
   }
 
-  public takePicture() {
-    // Create options for the Camera Dialog
-    var options = {
-      quality: 100,
-      sourceType: this.camera.PictureSourceType.CAMERA,
-      saveToPhotoAlbum: false,
-      correctOrientation: true
-    };
-
-    // Get the data of an image
-    this.camera.getPicture(options).then((imagePath) => {
-      console.log("## picture imagePath = " + imagePath);
-      let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-      console.log("## picture currentName = " + currentName);
-      let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-      console.log("## picture correctPath = " + correctPath);
-      console.log('## lets call copyFIleToLocalPath');
-      this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-      this.listDirItems(this.file.dataDirectory, 'projects');
-    }, (err) => {
-      console.log('Error while selecting image.');
-    });
-  }
 
   // Create a new name for the image
   private createFileName() {
@@ -323,6 +297,28 @@ export class GeneralPage {
     confirm.present();
   }
 
+  deleteAudio(index) {
+    console.log('## Delete Audio');
+    let confirm = this.alertCtrl.create({
+      title: 'Sure you want to delete this sound file? There is NO undo!',
+      message: '',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+            console.log('## Disagree clicked');
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            console.log('## Agree clicked');
+            this.audios.splice(index, 1);
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
   ionViewWillEnter() {
     this.getAudios();
   }
@@ -407,6 +403,14 @@ export class GeneralPage {
       ]
     });
     actionSheet.present();
+  }
+
+  private createAudioFileName() {
+    console.log('## BEGIN createAudioFileName()');
+    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()+ '_' + new Date().getSeconds() + '.3gp';
+    console.log('## newFileName = ' + newFileName);
+    console.log('## END createAudioFileName()');
+    return newFileName;
   }
 
 }

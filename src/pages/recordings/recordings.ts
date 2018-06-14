@@ -17,6 +17,7 @@ export class RecordingsPage {
   fileName: string = "myfile.3gp";
   filePath: string;
   position: string;
+  audios: Array<string>;
 
   constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File) {
 
@@ -144,4 +145,13 @@ export class RecordingsPage {
     this.navCtrl.pop();
   }
 
+  private createAudioFileName() {
+    console.log('## BEGIN createAudioFileName()');
+    let d = new Date(),
+      n = d.getTime(),
+      newFileName = n + ".jpg";
+    console.log('## newFileName = ' + newFileName);
+    console.log('## END createAudioFileName()');
+    return newFileName;
+  }
 }

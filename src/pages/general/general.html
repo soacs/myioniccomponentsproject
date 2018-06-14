@@ -11,7 +11,8 @@
 </ion-header>
 <ion-content padding>
   <ion-label class="projectLabel" color="danger">Project Name:
- {{projectName | uppercase}}</ion-label>
+    {{projectName | uppercase}}
+  </ion-label>
   <form #f="ngForm" [formGroup]="generalForm" (ngSubmit)="onSubmit(f)">
     <p>Requirements</p>
     <ion-list color="secondary">
@@ -28,9 +29,9 @@
         <ion-toggle [(ngModel)]="installation" color="purpleish" formControlName="installation"></ion-toggle>
       </ion-item>
       <ion-item>
-      <ion-label>Licensed Contractor Only</ion-label>
-      <ion-toggle [(ngModel)]="licensed" color="purpleish" formControlName="licensed"></ion-toggle>
-    </ion-item>
+        <ion-label>Licensed Contractor Only</ion-label>
+        <ion-toggle [(ngModel)]="licensed" color="purpleish" formControlName="licensed"></ion-toggle>
+      </ion-item>
       <ion-item>
         <ion-label>Quote Requested</ion-label>
         <ion-toggle [(ngModel)]="quote" color="purpleish" formControlName="quote"></ion-toggle>
@@ -39,32 +40,26 @@
         <ion-label>Call requested</ion-label>
         <ion-toggle [(ngModel)]="call" color="purpleish" formControlName="call"></ion-toggle>
       </ion-item>
-
       <ion-item>
-
         <ion-range min="100" max="1000" step="10" [(ngModel)]="budget" color="secondary" formControlName="budget">
           <ion-label range-left>$100</ion-label>
           <ion-label range-right>$1000</ion-label>
         </ion-range>
         <ion-label>APPROXIMATE BUDGET: {{budget || 100 | currency}}</ion-label>
       </ion-item>
-
       <ion-item>
         <p>Recordings</p>
         <div ion-button primary round (click)="addRecording()">
           <ion-icon name="mic"></ion-icon>&nbsp;Add Recording
         </div>
       </ion-item>
-
-        <ion-item *ngFor="let audio of audioList; index as i;">
-          <p>{{audio.filename}}</p>
-          <button ion-button clear item-end large (click)="playAudio(audio.filename, i)">
-            <ion-icon name="mic"></ion-icon>
-          </button>
-        </ion-item>
-
+      <ion-item *ngFor="let audio of audioList; index as i;">
+        <p>{{audio.filename}}</p>
+        <button ion-button clear item-end large (click)="playAudio(audio.filename, i)">
+          <ion-icon name="mic"></ion-icon>
+        </button>
+      </ion-item>
     </ion-list>
-
     <ion-list radio-group [(ngModel)]="timeFrame" formControlName="timeFrame">
       <p>Time Frame</p>
       <ion-item>
@@ -76,10 +71,9 @@
         <ion-radio value="Other"></ion-radio>
       </ion-item>
     </ion-list>
-
-
-      <ion-icon name="camera" large padding-right (click)="takePhoto()">Take Photo</ion-icon>
-
+    <ion-item>
+      <ion-icon name="camera" large padding-right="10px" (click)="takePhoto()">Take Photo</ion-icon>
+    </ion-item>
     <ion-grid>
       <ion-row>
         <ion-col col-6 *ngFor="let photo of photos; let id = index">
