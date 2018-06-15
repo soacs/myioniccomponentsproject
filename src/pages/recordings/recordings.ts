@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {NavController, Platform} from 'ionic-angular';
 import {Media, MediaObject} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
+import {NavController, NavParams, AlertController, ToastController, LoadingController, Platform} from 'ionic-angular';
 
 @Component({
   selector: 'page-recordings',
@@ -11,15 +11,16 @@ export class RecordingsPage {
 
   recording: boolean = false;
   duration: number;
-  items;
+  items: any;
   audio: MediaObject;
   mediaDirectory: string;
-  fileName: string = "myfile.3gp";
+  fileName: string;
   filePath: string;
   position: string;
-  audios: Array<string>;
+  audios: Array<any>;
+  presentAudio: any;
 
-  constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File) {
+  constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController) {
 
     this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory mydir already exists')).catch(err => {
         console.log('Directory mydir does not exist, calling createDir...');
@@ -32,11 +33,11 @@ export class RecordingsPage {
     );
 
     this.mediaDirectory = this.file.dataDirectory + "mydir/";
-    this.filePath = this.mediaDirectory + this.fileName;
-
     console.log("this.file.dataDirectory = " + this.file.dataDirectory);
     console.log("this.mediaDirectory = " + this.mediaDirectory);
-    console.log("this.filePath = " + this.filePath);
+  }
+  ngOnInit() {
+    this.audios = [];
   }
 
   listDirItems() {
@@ -78,7 +79,7 @@ export class RecordingsPage {
     console.log("Audio Duration: " + this.duration);
   }
 
-  skipTenSecnds() {
+  skipTenSeconds() {
     this.audio.seekTo(10000);
   }
 
@@ -90,23 +91,10 @@ export class RecordingsPage {
     this.audio.release();
   }
 
-  startRecording() {
-    //this.file.createFile(this.file.dataDirectory + "mydir", 'myfile.3gp', true);
-    // Recording to a file
-    console.log("Start recording to file path named: " + this.filePath);
-    this.audio = this.media.create(this.filePath);
-    this.audio.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
-    this.audio.onSuccess.subscribe(() => console.log('Action is successful'));
-    this.audio.onError.subscribe(error => console.log('Error!', error));
-    this.audio.startRecord();
-    this.recording = true;
-    this.listDir(this.file.dataDirectory, "mydir");
-  }
-
   startAnotherRecording() {
     console.log("startAnotherRecording....");
     if (this.platform.is('android')) {
-      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.3gp';
+      this.fileName = this.createAudioFileName();
       this.filePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
       console.log("startAnotherRecording - this.fileName = " + this.fileName);
       console.log("startAnotherRecording - this.filePath = " + this.filePath);
@@ -116,9 +104,9 @@ export class RecordingsPage {
       this.audio.onError.subscribe(error => console.log('Error!', error));
       this.audio.startRecord();
       this.recording = true;
-      console.log("startAnotherRecording - listDir....");
       console.log("this.file.externalDataDirectory = " + this.file.externalDataDirectory);
-      this.listDir(this.file.externalDataDirectory, "");
+      console.log("listDir() output:");
+      this.listDir(this.file.externalDataDirectory.replace(/file:\/\//g, ''), "");
     }
   }
 
@@ -127,14 +115,13 @@ export class RecordingsPage {
     this.audio.stopRecord();
     this.audio.release();
     this.recording = false;
+    this.presentAudio = { fileName: this.fileName, filePath: this.filePath };
+    console.log('presentAudio = ' + JSON.stringify(this.presentAudio));
+    this.audios.push(this.presentAudio);
+    console.log('presentAudio pushed to array - hurry!');
+    this.audios.reverse();
   }
 
-  playM4A() {
-    //let mp3URL = getMediaURL("http://angularorange.io/test.m4a");
-    let media = this.media.create('http://angularorange.io/test.m4a');
-
-    media.play();
-  }
 
   mediaError(e) {
     console.log('Media Error');
@@ -147,11 +134,32 @@ export class RecordingsPage {
 
   private createAudioFileName() {
     console.log('## BEGIN createAudioFileName()');
-    let d = new Date(),
-      n = d.getTime(),
-      newFileName = n + ".jpg";
+    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()+ '_' + new Date().getSeconds() + '.3gp';
     console.log('## newFileName = ' + newFileName);
     console.log('## END createAudioFileName()');
     return newFileName;
+  }
+
+  deleteAudio(index) {
+    console.log('## Delete Audio');
+    let confirm = this.alertCtrl.create({
+      title: 'Sure you want to delete this audio? There is NO undo!',
+      message: '',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+            console.log('## Disagree clicked');
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            console.log('## Agree clicked');
+            this.audios.splice(index, 1);
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 }
