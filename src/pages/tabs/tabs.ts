@@ -3,6 +3,7 @@ import { AboutPage } from '../about/about';
 import { ContactPage } from '../contact/contact';
 import { HomePage } from '../home/home';
 import { ProjectsPage } from '../projects/projects';
+import { Platform} from 'ionic-angular';
 
 @Component({
   templateUrl: 'tabs.html'
@@ -14,7 +15,12 @@ export class TabsPage {
   tab3Root = ContactPage;
   tab4Root = ProjectsPage;
 
-  constructor() {
-
+  constructor(private platform: Platform) {
+    this.platform = platform;
+  }
+  exitApp(){
+    console.log('BEGIN exitApp');
+    this.platform.exitApp();
+    console.log('END exitApp');
   }
 }

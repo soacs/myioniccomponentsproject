@@ -17,7 +17,7 @@ export class RecordingsPage {
   fileName: string;
   filePath: string;
   position: string;
-  audios: Array<any>;
+  audios: Array<any>=[];
   presentAudio: any;
 
   constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController) {
@@ -115,8 +115,9 @@ export class RecordingsPage {
     this.audio.stopRecord();
     this.audio.release();
     this.recording = false;
-    this.presentAudio = { fileName: this.fileName, filePath: this.filePath };
-    console.log('presentAudio = ' + JSON.stringify(this.presentAudio));
+    //this.duration = this.audio.getDuration();
+    this.presentAudio = { fileName: this.fileName, filePath: this.filePath, duration: this.duration };
+    console.log('pushing presentAudio = ' + JSON.stringify(this.presentAudio));
     this.audios.push(this.presentAudio);
     console.log('presentAudio pushed to array - hurry!');
     this.audios.reverse();
@@ -130,6 +131,10 @@ export class RecordingsPage {
 
   finishedAddingRecordings() {
     this.navCtrl.pop();
+  }
+
+  logAudios() {
+    console.log('MY_AUDIOS: ' + JSON.stringify(this.audios));
   }
 
   private createAudioFileName() {
