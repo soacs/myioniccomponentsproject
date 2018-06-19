@@ -10,6 +10,7 @@ import {NavController, NavParams, AlertController, ToastController, LoadingContr
 export class RecordingsPage {
 
   recording: boolean = false;
+  playing: boolean = false;
   duration: number;
   items: any;
   audio: MediaObject;
@@ -41,10 +42,11 @@ export class RecordingsPage {
   }
 
   listDirItems() {
-    this.listDir(this.file.dataDirectory, "mydir");
+    this.listDir(this.file.externalDataDirectory, "");
   }
 
   listDir = (path, dirName) => {
+    console.log("listDir() output:");
     this.file.listDir(path, dirName).then((entries) => {
       this.items = entries;
       console.log("listDir - inside path = " + path);
@@ -60,6 +62,18 @@ export class RecordingsPage {
   play() {
     console.log("Play audio");
     this.audio.play();
+    this.playing = true;
+    let timerDur = setInterval(() =>{
+      this.duration = this.audio.getDuration();
+      console.log('duration = ' + this.duration);
+    }, 100);
+    let timerPosition = setInterval(() =>{
+      this.audio.getCurrentPosition().then((p)=>{
+        this.position = p;
+      });
+      console.log('position = ' + this.position);
+    }, 100);
+
   }
 
   pause() {
@@ -105,8 +119,8 @@ export class RecordingsPage {
       this.audio.startRecord();
       this.recording = true;
       console.log("this.file.externalDataDirectory = " + this.file.externalDataDirectory);
-      console.log("listDir() output:");
-      this.listDir(this.file.externalDataDirectory.replace(/file:\/\//g, ''), "");
+
+
     }
   }
 
@@ -115,12 +129,12 @@ export class RecordingsPage {
     this.audio.stopRecord();
     this.audio.release();
     this.recording = false;
-    //this.duration = this.audio.getDuration();
     this.presentAudio = { fileName: this.fileName, filePath: this.filePath, duration: this.duration };
     console.log('pushing presentAudio = ' + JSON.stringify(this.presentAudio));
     this.audios.push(this.presentAudio);
-    console.log('presentAudio pushed to array - hurry!');
+    console.log('presentAudio pushed to array - hurray!');
     this.audios.reverse();
+    this.listDir(this.file.externalDataDirectory, "");
   }
 
 
