@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Media, MediaObject} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
 import {NavController, NavParams, AlertController, ToastController, LoadingController, Platform} from 'ionic-angular';
+import { Observable, Subject, AsyncSubject} from 'rxjs';
 
 @Component({
   selector: 'page-recordings',
@@ -12,13 +13,13 @@ export class RecordingsPage {
   recording: boolean = false;
   playing: boolean = false;
   duration: number;
+  position: number;
   items: any;
   audio: MediaObject;
   mediaDirectory: string;
   fileName: string;
   filePath: string;
-  position: string;
-  audios: Array<any>=[];
+  audios: Array<any> = [];
   presentAudio: any;
 
   constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController) {
@@ -37,6 +38,7 @@ export class RecordingsPage {
     console.log("this.file.dataDirectory = " + this.file.dataDirectory);
     console.log("this.mediaDirectory = " + this.mediaDirectory);
   }
+
   ngOnInit() {
     this.audios = [];
   }
@@ -59,38 +61,74 @@ export class RecordingsPage {
     console.log('error reading,', error)
   };
 
-  play() {
-    console.log("Play audio");
-    this.audio.play();
-    this.playing = true;
-    let timerDur = setInterval(() =>{
-      this.duration = this.audio.getDuration();
-      console.log('duration = ' + this.duration);
-    }, 100);
-    let timerPosition = setInterval(() =>{
-      this.audio.getCurrentPosition().then((p)=>{
-        this.position = p;
+  play(id) {
+    this.position = 0;
+    this.duration = 0;
+    console.log("Play audio id = " + id);
+    this.audios[id].audio.play(id);
+
+    this.duration = this.audios[id].audio.getDuration();
+    let timerDur = setInterval(() => {
+      this.duration = this.audios[id].audio.getDuration();
+      console.log('-------------------------------------duration = ' + this.duration);
+      clearInterval(timerDur);
+    }, 400);
+    let timerPosition = setInterval(() => {
+      this.audios[id].audio.getCurrentPosition().then((position) => {
+        this.position = position;
       });
       console.log('position = ' + this.position);
+    }, 200);
+    this.audios[id].playing = true;
+    let subject = new AsyncSubject();
+    let handle = setInterval(() =>{
+      subject.next(this.position)
+      let diff = this.duration - this.position;
+        if ( diff < .3) {
+        console.log('calling complete');
+        subject.complete();
+        clearInterval(handle);
+      }
     }, 100);
 
+    let subscription = subject.subscribe(
+      (x)=> {
+        console.log('Next: ' + x.toString());
+      },
+      (err) => {
+        console.log('Error: ' + err);
+      },
+      () =>{
+        this.audios[id].playing = false;
+        console.log('Completed');
+        clearInterval(timerPosition);
+        console.log('this.audios[id].playing: ' + this.audios[id].playing);
+      });
+
   }
 
-  pause() {
-    console.log("Pause audio");
-    this.audio.pause();
+  pause(id) {
+    console.log("Pause audio id= " + id);
+    this.audios[id].audio.pause();
   }
 
-  getCurrentPosition() {
-    this.audio.getCurrentPosition().then((position) => {
+  getCurrentPosition(id): number {
+    let position;
+    console.log("Get audio position for id = " + id);
+    this.audios[id].audio.getCurrentPosition().then((pos) => {
+      position = pos;
+      console.log("Audio Position = " + position);
       console.log(position);
     });
+    return position;
   }
 
-  getDuration() {
-    console.log("Get audio duration");
-    this.duration = this.audio.getDuration();
-    console.log("Audio Duration: " + this.duration);
+  getDuration(id): number {
+    let duration;
+    console.log("Get audio duration for id = " + id);
+    duration = this.audios[id].audio.getDuration();
+    console.log("Audio Duration = " + duration);
+    return duration;
   }
 
   skipTenSeconds() {
@@ -113,14 +151,11 @@ export class RecordingsPage {
       console.log("startAnotherRecording - this.fileName = " + this.fileName);
       console.log("startAnotherRecording - this.filePath = " + this.filePath);
       this.audio = this.media.create(this.filePath);
-      this.audio.onStatusUpdate.subscribe(status => console.log(status)); // fires when file status changes
       this.audio.onSuccess.subscribe(() => console.log('Action is successful'));
       this.audio.onError.subscribe(error => console.log('Error!', error));
       this.audio.startRecord();
       this.recording = true;
       console.log("this.file.externalDataDirectory = " + this.file.externalDataDirectory);
-
-
     }
   }
 
@@ -129,18 +164,18 @@ export class RecordingsPage {
     this.audio.stopRecord();
     this.audio.release();
     this.recording = false;
-    this.presentAudio = { fileName: this.fileName, filePath: this.filePath, duration: this.duration };
+    this.presentAudio = {
+      audio: this.audio,
+      fileName: this.fileName,
+      filePath: this.filePath,
+      duration: this.audio.getDuration(),
+      playing: false
+    };
     console.log('pushing presentAudio = ' + JSON.stringify(this.presentAudio));
     this.audios.push(this.presentAudio);
     console.log('presentAudio pushed to array - hurray!');
     this.audios.reverse();
     this.listDir(this.file.externalDataDirectory, "");
-  }
-
-
-  mediaError(e) {
-    console.log('Media Error');
-    console.log(JSON.stringify(e));
   }
 
   finishedAddingRecordings() {
@@ -153,7 +188,7 @@ export class RecordingsPage {
 
   private createAudioFileName() {
     console.log('## BEGIN createAudioFileName()');
-    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()+ '_' + new Date().getSeconds() + '.3gp';
+    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes() + '_' + new Date().getSeconds() + '.3gp';
     console.log('## newFileName = ' + newFileName);
     console.log('## END createAudioFileName()');
     return newFileName;
@@ -180,5 +215,10 @@ export class RecordingsPage {
       ]
     });
     confirm.present();
+  }
+
+  mediaError(e) {
+    console.log('Media Error');
+    console.log(JSON.stringify(e));
   }
 }

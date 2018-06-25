@@ -14,7 +14,7 @@
     <ion-item>
       <ion-icon name="construct" color="manageColor" item-start isActive="false"></ion-icon>
       Open Projects
-      <ion-badge item-end>{{projectCount}}</ion-badge>
+      <ion-badge item-end color="manageColor">{{projectCount}}</ion-badge>
     </ion-item>
   </ion-list>
   <ion-card>
@@ -22,10 +22,10 @@
       Project Options
     </ion-card-header>
     <ion-list>
-      <button ion-button (click)="createProject($event)" full large>Create</button>
-      <button ion-button (click)="viewProjects()" full large>List All</button>
-      <button ion-button (click)="publishProjects()" full large>Publish</button>
-      <button ion-button (click)="searchProjects()" full large>Search</button>
+      <button ion-button (click)="createProject($event)" full large color="manageColor">Create</button>
+      <button ion-button (click)="viewProjects()" full large color="manageColor">List All</button>
+      <button ion-button (click)="publishProjects()" full large color="manageColor">Publish</button>
+      <button ion-button (click)="searchProjects()" full large color="manageColor">Search</button>
     </ion-list>
   </ion-card>
 </ion-content>

@@ -9,32 +9,45 @@
   <ion-card>
     <ion-card-content>
       <ion-card-title>
-        <p>Record Requirements</p>
+        <p>Add Recording Requirements</p>
       </ion-card-title>
       <button ion-button primary (click)="stopRecording()" *ngIf="recording">
-        <ion-icon name="mic-off"></ion-icon>&nbsp;&nbsp;Stop Recording
+        <ion-icon name="mic-off" padding-right></ion-icon>Stop Recording
       </button>
       <button ion-button primary (click)="startAnotherRecording()" *ngIf="!recording">
-        <ion-icon name="mic"></ion-icon>&nbsp;&nbsp;Start Another Recording
+        <ion-icon name="mic" padding-right></ion-icon>Start Recording
       </button>
       <ion-grid *ngFor="let audio of audios; let id = index">
         <ion-row>
           <ion-col col-2 align-self-center>
             <ion-icon name="trash" class="deleteIcon" large (click)="deleteAudio(id)"></ion-icon>
           </ion-col>
-          <ion-col col-8 align-self-center>
-            <ion-label padding="2px">{{audio.fileName}}</ion-label>
+          <ion-col col-6 align-self-center>
+            <ion-label padding="2px">{{audio.fileName | slice:18}}</ion-label>
           </ion-col>
           <ion-col col-2 align-self-center>
             <button ion-button clear item-end large (click)="play(id)">
               <ion-icon name="play"></ion-icon>
             </button>
           </ion-col>
+          <ion-col col-2 align-self-center>
+            <button ion-button clear item-end large (click)="pause(id)">
+              <ion-icon name="pause"></ion-icon>
+            </button>
+          </ion-col>
         </ion-row>
-        <ion-row *ngIf="playing">
-          <ion-col col-12 align-self-center>
-            Position {{position | number:'1.1'}}sec
-            / {{duration | number:'1.1'}}s
+        <ion-row *ngIf="audio.playing">
+          <ion-col col-3 center>
+            Position
+          </ion-col>
+          <ion-col col-3 center>
+            {{position | number:'1.1-1'}}s
+          </ion-col>
+          <ion-col col-3 align-self-center>
+            Duration
+          </ion-col>
+          <ion-col col-3 center>
+            {{duration | number:'1.1-1'}}s
           </ion-col>
         </ion-row>
       </ion-grid>
