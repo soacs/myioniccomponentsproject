@@ -5,7 +5,7 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content padding fullscreen>
   <ion-card>
     <ion-card-content>
       <ion-card-title>
@@ -14,7 +14,7 @@
       <button ion-button primary (click)="stopRecording()" *ngIf="recording">
         <ion-icon name="mic-off" padding-right></ion-icon>Stop Recording
       </button>
-      <button ion-button primary (click)="startAnotherRecording()" *ngIf="!recording">
+      <button ion-button primary round (click)="startAnotherRecording()" *ngIf="!recording">
         <ion-icon name="mic" padding-right></ion-icon>Start Recording
       </button>
       <ion-grid *ngFor="let audio of audios; let id = index">
@@ -53,25 +53,17 @@
       </ion-grid>
     </ion-card-content>
   </ion-card>
-  <ion-list>
-    <ion-item>
-      <p>list items in Directory</p>
-      <button ion-button clear item-start large (click)="listDirItems()">
-        <ion-icon name="list"></ion-icon>&nbsp;List Directory items
-      </button>
-    </ion-item>
-    <ion-item>
-      <p>Items:</p>
-      {{items | json}}
-    </ion-item>
-    <ion-item>
-      <p>PresentAudio:</p>
-      {{presentAudio | json}}
-    </ion-item>
-    <ion-item>
-      <button ion-button item-center large round (click)="finishedAddingRecordings()">
+</ion-content>
+  <ion-footer>
+    <ion-toolbar>
+  <ion-row center>
+    <ion-col text-center>
+      <button ion-button large (click)="finishedAddingRecordings()">
         <ion-icon name="done-all"></ion-icon>&nbsp;Finished Recordings
       </button>
-    </ion-item>
-  </ion-list>
-</ion-content>
+    </ion-col>
+  </ion-row>
+    </ion-toolbar>
+  </ion-footer>
+
+
