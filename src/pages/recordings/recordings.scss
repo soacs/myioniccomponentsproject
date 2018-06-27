@@ -2,4 +2,24 @@ page-recordings {
   .md-button-toggle-label-content{
     background-color:#8BC34A !important;
   }
+
+  ion-grid {
+    height: 100%;
+
+    ion-row {
+      height: 25% !important;
+    }
+  }
+
+  footer {
+    background: white;
+    margin-bottom: 0px !important;
+  }
+
+  .fixed-content {
+    margin-bottom: 0px !important;
+  }
+  .scroll-content {
+    margin-bottom: 0px !important;
+  }
 }
