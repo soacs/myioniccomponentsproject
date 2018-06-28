@@ -138,7 +138,6 @@ export class GeneralPage {
   }
 
   addLocalrecording(){
-
   }
 
   showAlert(message) {
@@ -241,12 +240,10 @@ export class GeneralPage {
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.photos.push(this.base64Image);
       this.photos.reverse();
-
     }, (err) => {
       console.log(err);
     });
   }
-
 
   // Create a new name for the image
   private createFileName() {
@@ -272,7 +269,6 @@ export class GeneralPage {
     });
     console.log('## END copyFileToLocalDir()');
   }
-
 
   deletePhoto(index) {
     console.log('## Delete Photo');

@@ -71,8 +71,11 @@
         <ion-radio value="Other"></ion-radio>
       </ion-item>
     </ion-list>
+    <p>Photos</p>
     <ion-item>
-      <ion-icon name="camera" large padding-right="10px" (click)="takePhoto()">Take Photo</ion-icon>
+      <div ion-button primary round (click)="takePhoto()">
+        <ion-icon name="camera" large padding-right></ion-icon>Add Photo
+      </div>
     </ion-item>
     <ion-grid>
       <ion-row>
