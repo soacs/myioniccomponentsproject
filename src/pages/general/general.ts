@@ -188,7 +188,7 @@ export class GeneralPage {
     let toast = this.toastCtrl.create({
       message: ' Project was saved successfully',
       duration: 2000,
-      position: 'middle'
+      position: 'top'
     });
     toast.present();
   }
@@ -218,6 +218,7 @@ export class GeneralPage {
 
   onSubmit(f: FormGroup) {
     this.presentLoading();
+    this.save();
     console.log('## f.value = ' + JSON.stringify(f.value));
     if (this.generalForm.valid) {
       console.log('## generalForm submitted!');

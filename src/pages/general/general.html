@@ -18,38 +18,39 @@
     <ion-list color="secondary">
       <ion-item>
         <ion-label>Local Contractors Only</ion-label>
-        <ion-toggle [(ngModel)]="local" color="purpleish" formControlName="local"></ion-toggle>
+        <ion-toggle [(ngModel)]="local" color="manageColor" formControlName="local"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Include Supplies</ion-label>
-        <ion-toggle [(ngModel)]="supplies" color="purpleish" formControlName="supplies"></ion-toggle>
+        <ion-toggle [(ngModel)]="supplies" color="manageColor" formControlName="supplies"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Include Install Costs</ion-label>
-        <ion-toggle [(ngModel)]="installation" color="purpleish" formControlName="installation"></ion-toggle>
+        <ion-toggle [(ngModel)]="installation" color="manageColor" formControlName="installation"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Licensed Contractor Only</ion-label>
-        <ion-toggle [(ngModel)]="licensed" color="purpleish" formControlName="licensed"></ion-toggle>
+        <ion-toggle [(ngModel)]="licensed" color="manageColor" formControlName="licensed"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Quote Requested</ion-label>
-        <ion-toggle [(ngModel)]="quote" color="purpleish" formControlName="quote"></ion-toggle>
+        <ion-toggle [(ngModel)]="quote" color="manageColor" formControlName="quote"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Call requested</ion-label>
-        <ion-toggle [(ngModel)]="call" color="purpleish" formControlName="call"></ion-toggle>
+        <ion-toggle [(ngModel)]="call" color="manageColor" formControlName="call"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-range min="100" max="1000" step="10" [(ngModel)]="budget" color="secondary" formControlName="budget">
+        <ion-range min="100" max="1000" step="10" [(ngModel)]="budget" color="manageColor" formControlName="budget">
           <ion-label range-left>$100</ion-label>
           <ion-label range-right>$1000</ion-label>
         </ion-range>
         <ion-label>APPROXIMATE BUDGET: {{budget || 100 | currency}}</ion-label>
       </ion-item>
+      <p>Recordings</p>
       <ion-item>
-        <p>Recordings</p>
-        <div ion-button primary round (click)="addRecording()">
+
+        <div ion-button color="manageColor" round (click)="addRecording()">
           <ion-icon name="mic" large padding-right></ion-icon>Add Recording
         </div>
       </ion-item>
@@ -64,16 +65,16 @@
       <p>Time Frame</p>
       <ion-item>
         <ion-label>Immediate</ion-label>
-        <ion-radio value="Immediate" checked></ion-radio>
+        <ion-radio value="Immediate" checked color="manageColor"></ion-radio>
       </ion-item>
       <ion-item>
         <ion-label>Other</ion-label>
-        <ion-radio value="Other"></ion-radio>
+        <ion-radio value="Other" color="manageColor"></ion-radio>
       </ion-item>
     </ion-list>
     <p>Photos</p>
     <ion-item>
-      <div ion-button primary round (click)="takePhoto()">
+      <div ion-button color="manageColor" round (click)="takePhoto()">
         <ion-icon name="camera" large padding-right></ion-icon>Add Photo
       </div>
     </ion-item>
@@ -90,22 +91,13 @@
     <ion-grid>
       <ion-row>
         <ion-col text-center col-sm-6>
-          <button ion-button type="reset" round text-center>Reset</button>
+          <button ion-button type="submit" round text-center  color="secondary">Submit</button>
         </ion-col>
         <ion-col text-center col-sm-6>
-          <button ion-button type="submit" round text-center>Submit</button>
+          <button ion-button type="reset" round text-center color="secondary">Reset</button>
         </ion-col>
       </ion-row>
     </ion-grid>
   </form>
-  <ion-grid>
-    <ion-row>
-      <ion-col text-center col-sm-6>
-        <button ion-button (click)="save()" round text-center>Save</button>
-      </ion-col>
-      <ion-col text-center col-sm-6>
-        <button ion-button (click)="cancel()" round text-center>Cancel</button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>
+
