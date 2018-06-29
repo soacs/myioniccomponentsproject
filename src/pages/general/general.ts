@@ -173,24 +173,22 @@ export class GeneralPage {
     };
 
     this.storage.get('projects').then(val => {
-      console.log('projects taken out of storage');
-      console.log('projects.length = ' + val.length);
       if (val !== null) {
-        console.log('push saved project into projects');
+        console.log('val.length before push: ' + val.length);
         val.push(project);
+        console.log('val.length after push: ' + val.length);
         console.log('set projects in storage again.');
         console.log('projects = ' + JSON.stringify(val));
-        this.storage.set('projects', val);
+        this.storage.remove('projects');
+        this.storage.set('projects', val).then(data => {
+          console.log('projects IS SAVED FOR CRYING OUT LOUD');
+          console.log('SAVED DATA =' + JSON.stringify(data));
+        });
+
       }
     });
-    this.storage.set('project', project);
 
-    let toast = this.toastCtrl.create({
-      message: ' Project was saved successfully',
-      duration: 2000,
-      position: 'top'
-    });
-    toast.present();
+
   }
 
   cancel() {
@@ -206,23 +204,32 @@ export class GeneralPage {
   presentLoading() {
     let loader = this.loadingCtrl.create({
       content: 'Please wait while submitting project...',
-      duration: 3000
+      duration: 5000
     });
     loader.present();
 
     loader.onDidDismiss(() => {
       console.log('## Dismissed loading');
+      let toast = this.toastCtrl.create({
+        message: ' Project was saved successfully',
+        duration: 2000,
+        position: 'top'
+      });
+      toast.present();
       this.navCtrl.pop();
     });
   }
 
   onSubmit(f: FormGroup) {
-    this.presentLoading();
-    this.save();
+
     console.log('## f.value = ' + JSON.stringify(f.value));
     if (this.generalForm.valid) {
       console.log('## generalForm submitted!');
-      this.generalForm.reset();
+      console.log('## onSumit calling save()!');
+      this.save();
+      console.log('## onSumit after calling save()!');
+      //this.generalForm.reset();
+      this.presentLoading();
     }
   }
 

@@ -188,7 +188,8 @@ export class RecordingsPage {
 
   private createAudioFileName() {
     console.log('## BEGIN createAudioFileName()');
-    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes() + '_' + new Date().getSeconds() + '.3gp';
+    let d = new Date();
+    let newFileName = 'record_' + d.getMonth() + '_' + d.getDay() + '_' + d.getFullYear() + '_' + d.getHours() + '_' + d.getMinutes() + '_' + d.getSeconds() + '.3gp';
     console.log('## newFileName = ' + newFileName);
     console.log('## END createAudioFileName()');
     return newFileName;
