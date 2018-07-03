@@ -68,7 +68,7 @@ export class GeneralPage {
 
     this.generalForm = this.formBuilder.group({
       budget: [''],
-      timeFrame: [''],
+      timeFrame: ['checked'],
       immediate: [''],
       local: [''],
       supplies: [''],
@@ -169,7 +169,7 @@ export class GeneralPage {
       'photos': this.photos,
       'videos': this.videos,
       'audios': this.audios,
-      'status': 'Open'
+      'status': 'open'
     };
 
     this.storage.get('projects').then(val => {
@@ -179,7 +179,7 @@ export class GeneralPage {
         console.log('val.length after push: ' + val.length);
         console.log('set projects in storage again.');
         console.log('projects = ' + JSON.stringify(val));
-        this.storage.remove('projects');
+        //this.storage.remove('projects');
         this.storage.set('projects', val).then(data => {
           console.log('projects IS SAVED FOR CRYING OUT LOUD');
           console.log('SAVED DATA =' + JSON.stringify(data));
@@ -187,8 +187,6 @@ export class GeneralPage {
 
       }
     });
-
-
   }
 
   cancel() {
@@ -212,7 +210,7 @@ export class GeneralPage {
       console.log('## Dismissed loading');
       let toast = this.toastCtrl.create({
         message: ' Project was saved successfully',
-        duration: 2000,
+        duration: 1000,
         position: 'top'
       });
       toast.present();

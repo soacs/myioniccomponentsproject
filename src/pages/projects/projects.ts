@@ -8,7 +8,6 @@ import {PopoverController} from 'ionic-angular';
 import {PopoverPage} from '../popover/popover';
 import {Storage} from '@ionic/storage';
 
-
 @Component({
   selector: 'page-projects',
   templateUrl: 'projects.html',
@@ -76,7 +75,6 @@ export class ProjectsPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProjectsPage');
   }
   ionViewWillEnter() {
     console.log('ionViewWillEnter ProjectsPage');

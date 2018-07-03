@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {ItemSliding} from 'ionic-angular';
-
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'page-list',
@@ -12,44 +12,31 @@ export class ListPage {
   item: ItemSliding;
   projectState: string = "open";
   isOpen: boolean = true;
-  searchQuery: string = '';
+  projectCount: number = 0;
+  projects: Array<any>;
+  originalProjects: Array<any>;
 
-  projectItems: Array<any> = ["Project one", "Project two", "Project three", "Project four", "Project five"];
-  completedProjectItems: Array<any> = ["Project six completed", "Project seven completed", "Project eight completed"];
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    console.log('ListPage constructor');
-    this.initializeProjectItems();
+  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage) {
+    console.log('BEGIN ListPage constructor');
+    this.storage.get('projects').then(val=>{
+      if(val !== null){
+        this.projects = val;
+        this.originalProjects = this.projects.slice();
+        this.projectCount = val.length;
+        console.log('projectCount val = ' + val.length);
+        console.log('projectCount this = ' + this.projectCount);
+      } else {
+        console.log('ERROR projects were not found in storage!');
+      }
+    });
+    console.log('END ListPage constructor');
   }
 
-  deleteProject(projectItem: string) {
-    // Find and remove item from an array
-    var i =  this.projectItems.indexOf(projectItem);
-    if(i != -1) {
-      this.projectItems.splice(i, 1);
-    }
+  deleteProject(i: number) {
+      this.projects.splice(i, 1);
+      this.projectCount = this.projects.length;
   }
 
-  deleteCompletedProject(projectItem: string) {
-    // Find and remove item from an array
-    var i =  this.completedProjectItems.indexOf(projectItem);
-    if(i != -1) {
-      this.completedProjectItems.splice(i, 1);
-    }
-  }
-  /*
-  segmentChanged(event: Event) {
-    console.log("event.value = " + event.value);
-    this.projectState =  event.value;
-    if(this.projectState=="open"){
-      this.isOpen = true;
-    } else {
-      this.isOpen = false;
-    }
-
-    console.log("projectState = " + this.projectState);
-  }
-*/
   closeProject(slidingItem: ItemSliding) {
     slidingItem.close();
   }
@@ -62,28 +49,24 @@ export class ListPage {
     console.log('remove project');
   }
 
+  save(){
+    console.log('BEGIN save');
+    this.storage.set('projects', this.projects).then(data => {
+      console.log('projects has been saved');
+      console.log('Saved data =' + JSON.stringify(data));
+    });
+
+    this.navCtrl.pop();
+    console.log('END save');
+  }
+
+  cancel(){
+    console.log('BEGIN cancel');
+    this.projects = this.originalProjects.slice();
+    console.log('END cancel');
+  }
+
   ngOnInit() {
   }
-
-  getItems(ev: any) {
-    // Reset items back to all of the items
-    this.initializeProjectItems();
-
-    // set val to the value of the searchbar
-    let val = ev.target.value;
-
-    // if the value is an empty string don't filter the items
-    if (val && val.trim() != '') {
-      this.projectItems = this.projectItems.filter((item) => {
-        return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
-    }
-  }
-
-  initializeProjectItems() {
-    this.projectItems = ["Project one", "Project two", "Project three", "Project four", "Project five"];
-  }
-
-
 
 }

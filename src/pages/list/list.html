@@ -4,6 +4,14 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-icon name="construct" color="manageColor" item-start isActive="false"></ion-icon>
+      Total Projects
+      <ion-badge item-end color="manageColor">{{projectCount}}</ion-badge>
+    </ion-item>
+  </ion-list>
+
   <ion-segment [(ngModel)]="projectState" color="primary">
     <ion-segment-button value="open">
       Open
@@ -12,32 +20,27 @@
       Completed
     </ion-segment-button>
   </ion-segment>
-  <span *ngIf="projectState == 'open';else completedProjects">
-    <p ion-text color="secondary">List of open projects</p>
+    <p ion-text color="secondary">List of {{projectState}} projects</p>
   <ion-list>
-    <ion-item-sliding *ngFor="let project  of projectItems" #slidingItem>
+    <ion-item> <b>Name:</b> </ion-item>
+    <ion-item-sliding *ngFor="let project of projects; let i = index;" #slidingItem>
       <ion-item>
-        {{project}}
+       {{project.projectName}}
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button (click)="deleteProject(project)" color="danger">Delete</button>
+        <button ion-button (click)="deleteProject(i)" color="danger">Delete</button>
         <button ion-button (click)="closeProject(slidingItem)">Close</button>
       </ion-item-options>
     </ion-item-sliding>
     </ion-list>
-    </span>
-  <ng-template #completedProjects>
-    <p ion-text color="secondary">List of completed projects</p>
-    <ion-list>
-      <ion-item-sliding *ngFor="let project  of completedProjectItems" #slidingItem>
-        <ion-item>
-          {{project}}
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button (click)="deleteCompletedProject(project)" color="danger">Delete</button>
-          <button ion-button (click)="closeProject(slidingItem)">Close</button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ng-template>
+  <ion-grid>
+    <ion-row>
+      <ion-col text-center col-sm-6>
+        <button ion-button round text-center (click)="save()">Save</button>
+      </ion-col>
+      <ion-col text-center col-sm-6>
+        <button ion-button round text-center (click)="cancel()" >Cancel</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
