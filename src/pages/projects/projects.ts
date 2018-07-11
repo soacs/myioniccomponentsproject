@@ -8,6 +8,7 @@ import {PopoverController} from 'ionic-angular';
 import {PopoverPage} from '../popover/popover';
 import {Storage} from '@ionic/storage';
 
+@IonicPage()
 @Component({
   selector: 'page-projects',
   templateUrl: 'projects.html',
@@ -18,17 +19,17 @@ export class ProjectsPage {
   projectCount: number = 0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,  public storage: Storage) {
-    console.log('## BEGIN ProjectsPage constructor');
+    console.log('BEGIN ProjectsPage constructor');
     this.storage.get('projects').then(val=>{
       if(val !== null){
         this.projectCount = val.length;
         console.log('projectCount val = ' + val.length);
         console.log('projectCount this = ' + this.projectCount);
       } else {
-        console.log('## ERROR projects were not found in storage!');
+        console.log('ERROR projects were not found in storage!');
       }
     });
-    console.log('## END ProjectsPage constructor');
+    console.log('END ProjectsPage constructor');
   }
 
   presentPopover(myEvent) {
@@ -66,7 +67,7 @@ export class ProjectsPage {
   }
 
   searchProjects() {
-    this.navCtrl.push(SearchPage);
+    this.navCtrl.push('SearchPage');
   }
 
 

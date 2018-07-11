@@ -1,6 +1,6 @@
 import {NgModule, ErrorHandler} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
+import {IonicApp, IonicModule, IonicErrorHandler, DeepLinkConfig } from 'ionic-angular';
 import {ProjectsPageModule} from '../pages/projects/projects.module';
 import {MyApp} from './app.component';
 import {AboutPage} from '../pages/about/about';
@@ -14,6 +14,15 @@ import {Media} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
 import {FilePath} from '@ionic-native/file-path';
 import {Camera} from '@ionic-native/camera';
+import {LoggingService} from "ionic-logging-service";
+
+const DEEP_LINK_CONFIG: DeepLinkConfig = {
+  links: [
+    { component: ContactPage, name: "contact", segment: "contact"},
+  ]
+};
+
+const IONIC_CONFIG: any = { locationStrategy: 'path' };
 
 @NgModule({
   declarations: [
@@ -26,7 +35,7 @@ import {Camera} from '@ionic-native/camera';
   imports: [
     BrowserModule,
     ProjectsPageModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, IONIC_CONFIG, DEEP_LINK_CONFIG),
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
@@ -44,7 +53,8 @@ import {Camera} from '@ionic-native/camera';
     Media,
     File,
     FilePath,
-    Camera
+    Camera,
+    LoggingService
   ]
 })
 export class AppModule {

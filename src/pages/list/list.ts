@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {ItemSliding} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
+import {DetailsPage} from '../details/details';
 
 @Component({
   selector: 'page-list',
@@ -33,9 +34,15 @@ export class ListPage {
   }
 
   deleteProject(i: number) {
-      this.projects.splice(i, 1);
-      this.projectCount = this.projects.length;
-  }
+  this.projects.splice(i, 1);
+  this.projectCount = this.projects.length;
+}
+
+  viewProject(i: number) {
+    let data = { "projectIndex": i};
+    console.log("viewProject i = " + i);
+    this.navCtrl.push(DetailsPage, i);
+   }
 
   closeProject(slidingItem: ItemSliding) {
     slidingItem.close();

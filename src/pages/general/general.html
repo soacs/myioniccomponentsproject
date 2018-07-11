@@ -65,7 +65,7 @@
       <p>Time Frame</p>
       <ion-item>
         <ion-label>Immediate</ion-label>
-        <ion-radio value="Immediate" color="manageColor"></ion-radio>
+        <ion-radio value="Immediate" [checked]="isChecked" color="manageColor"></ion-radio>
       </ion-item>
       <ion-item>
         <ion-label>Other</ion-label>
@@ -94,7 +94,7 @@
           <button ion-button type="submit" round text-center  color="secondary">Submit</button>
         </ion-col>
         <ion-col text-center col-sm-6>
-          <button ion-button type="reset" round text-center color="secondary">Reset</button>
+          <button ion-button type="reset" round text-center color="secondary" (click)="resetForm()">Reset</button>
         </ion-col>
       </ion-row>
     </ion-grid>

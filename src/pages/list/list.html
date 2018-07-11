@@ -11,7 +11,6 @@
       <ion-badge item-end color="manageColor">{{projectCount}}</ion-badge>
     </ion-item>
   </ion-list>
-
   <ion-segment [(ngModel)]="projectState" color="primary">
     <ion-segment-button value="open">
       Open
@@ -20,27 +19,16 @@
       Completed
     </ion-segment-button>
   </ion-segment>
-    <p ion-text color="secondary">List of {{projectState}} projects</p>
-  <ion-list>
-    <ion-item> <b>Name:</b> </ion-item>
-    <ion-item-sliding *ngFor="let project of projects; let i = index;" #slidingItem>
-      <ion-item>
-       {{project.projectName}}
-      </ion-item>
-      <ion-item-options side="right">
-        <button ion-button (click)="deleteProject(i)" color="danger">Delete</button>
-        <button ion-button (click)="closeProject(slidingItem)">Close</button>
-      </ion-item-options>
-    </ion-item-sliding>
-    </ion-list>
-  <ion-grid>
-    <ion-row>
-      <ion-col text-center col-sm-6>
-        <button ion-button round text-center (click)="save()">Save</button>
-      </ion-col>
-      <ion-col text-center col-sm-6>
-        <button ion-button round text-center (click)="cancel()" >Cancel</button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-item>
+    <ion-grid>
+      <ion-row *ngFor="let project of projects; let i = index;">
+        <ion-col text-left col-sm-6 left>
+          {{project.projectName}}
+        </ion-col>
+        <ion-col text-right col-sm-6>
+          <button ion-button (click)="viewProject(i)" round color="secondary" right>View</button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
 </ion-content>

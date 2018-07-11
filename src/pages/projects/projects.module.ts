@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { ProjectsPage } from './projects';
-import { GeneralPage } from '../general/general';
-import { ListPage } from '../list/list';
-import { SearchPage } from '../search/search';
-import { PublishPage } from '../publish/publish';
-import { RecordingsPage } from '../recordings/recordings';
-import { PopoverPage } from '../popover/popover';
-import { Camera } from '@ionic-native/camera';
+import {NgModule} from '@angular/core';
+import {IonicPageModule} from 'ionic-angular';
+import {ProjectsPage} from './projects';
+import {GeneralPage} from '../general/general';
+import {ListPage} from '../list/list';
+import {SearchPage} from '../search/search';
+import {PublishPage} from '../publish/publish';
+import {RecordingsPage} from '../recordings/recordings';
+import {PopoverPage} from '../popover/popover';
+import {Camera} from '@ionic-native/camera';
+import {DetailsPage} from '../details/details';
 
 @NgModule({
   declarations: [
@@ -17,21 +18,24 @@ import { Camera } from '@ionic-native/camera';
     SearchPage,
     PublishPage,
     RecordingsPage,
-    PopoverPage
+    PopoverPage,
+    DetailsPage
   ],
   imports: [
     IonicPageModule.forChild(ProjectsPage),
   ],
-   providers: [
+  providers: [
     Camera
   ],
   entryComponents: [
-     GeneralPage,
-     ListPage,
-     SearchPage,
-     PublishPage,
-     RecordingsPage,
-     PopoverPage
+    GeneralPage,
+    ListPage,
+    SearchPage,
+    PublishPage,
+    RecordingsPage,
+    PopoverPage,
+    DetailsPage
   ],
 })
-export class ProjectsPageModule {}
+export class ProjectsPageModule {
+}

@@ -12,8 +12,8 @@ export class RecordingsPage {
 
   recording: boolean = false;
   playing: boolean = false;
-  duration: number;
-  position: number;
+  duration: number = 0;
+  position: number = 0;
   items: any;
   audio: MediaObject;
   mediaDirectory: string;
@@ -72,13 +72,13 @@ export class RecordingsPage {
       this.duration = this.audios[id].audio.getDuration();
       console.log('-------------------------------------duration = ' + this.duration);
       clearInterval(timerDur);
-    }, 400);
+    }, 100);
     let timerPosition = setInterval(() => {
       this.audios[id].audio.getCurrentPosition().then((position) => {
         this.position = position;
       });
       console.log('position = ' + this.position);
-    }, 200);
+    }, 100);
     this.audios[id].playing = true;
     let subject = new AsyncSubject();
     let handle = setInterval(() =>{
@@ -187,16 +187,16 @@ export class RecordingsPage {
   }
 
   private createAudioFileName() {
-    console.log('## BEGIN createAudioFileName()');
+    console.log('BEGIN createAudioFileName()');
     let d = new Date();
     let newFileName = 'record_' + d.getMonth() + '_' + d.getDay() + '_' + d.getFullYear() + '_' + d.getHours() + '_' + d.getMinutes() + '_' + d.getSeconds() + '.3gp';
-    console.log('## newFileName = ' + newFileName);
-    console.log('## END createAudioFileName()');
+    console.log('newFileName = ' + newFileName);
+    console.log('END createAudioFileName()');
     return newFileName;
   }
 
   deleteAudio(index) {
-    console.log('## Delete Audio');
+    console.log('Delete Audio');
     let confirm = this.alertCtrl.create({
       title: 'Sure you want to delete this audio? There is NO undo!',
       message: '',
@@ -204,12 +204,12 @@ export class RecordingsPage {
         {
           text: 'No',
           handler: () => {
-            console.log('## Disagree clicked');
+            console.log('Disagree clicked');
           }
         }, {
           text: 'Yes',
           handler: () => {
-            console.log('## Agree clicked');
+            console.log('Agree clicked');
             this.audios.splice(index, 1);
           }
         }
