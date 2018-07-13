@@ -42,9 +42,10 @@ export class GeneralPage {
   audio: MediaObject;
   base64Image: string;
   lastImage: string;
-  isChecked: boolean = true;
+  isChecked: boolean = false;
   // form
   generalForm: FormGroup;
+  initTimeFrame = 'Immediate';
 
   constructor(private filePath: FilePath, private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage,  public actionSheetCtrl: ActionSheetController) {
     console.log('BEGIN GeneralPage constructor');
@@ -80,11 +81,10 @@ export class GeneralPage {
     console.log('END GeneralPage constructor');
   }
 
-
   resetForm() {
     console.log('BEGIN resetForm');
     this.generalForm.reset();
-    this.isChecked = true;
+    this.generalForm.controls['timeFrame'].setValue("Immediate");
     console.log('END resetForm');
   }
 

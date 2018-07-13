@@ -45,13 +45,20 @@
           <ion-label range-left>$100</ion-label>
           <ion-label range-right>$1000</ion-label>
         </ion-range>
-        <ion-label>APPROXIMATE BUDGET: {{budget || 100 | currency}}</ion-label>
+        <ion-label>Approximate Budget: {{budget || 100 | currency}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-range min="0" max="8" step="1" [(ngModel)]="timeFrame" color="manageColor" formControlName="timeFrame">
+          <ion-label range-left>0</ion-label>
+          <ion-label range-right>8</ion-label>
+        </ion-range>
+        <ion-label>Time Frame: {{timeFrame || 0}} weeks</ion-label>
       </ion-item>
       <p>Recordings</p>
       <ion-item>
-
         <div ion-button color="manageColor" round (click)="addRecording()">
-          <ion-icon name="mic" large padding-right></ion-icon>Add Recording
+          <ion-icon name="mic" large padding-right></ion-icon>
+          Add Recording
         </div>
       </ion-item>
       <ion-item *ngFor="let audio of audioList; index as i;">
@@ -61,21 +68,11 @@
         </button>
       </ion-item>
     </ion-list>
-    <ion-list radio-group [(ngModel)]="timeFrame" formControlName="timeFrame">
-      <p>Time Frame</p>
-      <ion-item>
-        <ion-label>Immediate</ion-label>
-        <ion-radio value="Immediate" [checked]="isChecked" color="manageColor"></ion-radio>
-      </ion-item>
-      <ion-item>
-        <ion-label>Other</ion-label>
-        <ion-radio value="Other" color="manageColor"></ion-radio>
-      </ion-item>
-    </ion-list>
     <p>Photos</p>
     <ion-item>
       <div ion-button color="manageColor" round (click)="takePhoto()">
-        <ion-icon name="camera" large padding-right></ion-icon>Add Photo
+        <ion-icon name="camera" large padding-right></ion-icon>
+        Add Photo
       </div>
     </ion-item>
     <ion-grid>
@@ -91,7 +88,7 @@
     <ion-grid>
       <ion-row>
         <ion-col text-center col-sm-6>
-          <button ion-button type="submit" round text-center  color="secondary">Submit</button>
+          <button ion-button type="submit" round text-center color="secondary">Submit</button>
         </ion-col>
         <ion-col text-center col-sm-6>
           <button ion-button type="reset" round text-center color="secondary" (click)="resetForm()">Reset</button>

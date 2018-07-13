@@ -39,6 +39,7 @@ export class ProjectsPage {
       console.log("presentPopover data is " + JSON.stringify(data));
       this.projectName = data.name;
       this.navCtrl.push(GeneralPage, data);
+
     });
 
     let ev = {

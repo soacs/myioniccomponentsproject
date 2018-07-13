@@ -9,6 +9,9 @@ import { Platform} from 'ionic-angular';
 export class HomePage {
 
   constructor(public navCtrl: NavController, private platform: Platform) {
+    console.log("BEGIN HomePage");
+    let t: Tabs = this.navCtrl.parent;
+    console.log("END HomePage");
   }
 
   selectTab(index: number) {

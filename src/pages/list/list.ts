@@ -52,6 +52,10 @@ export class ListPage {
     console.log('ionViewDidLoad ListPage');
   }
 
+  ionViewWillDisappear() {
+    console.log('ionViewWillDisappear ListPage');
+  }
+
   removeProject(){
     console.log('remove project');
   }
