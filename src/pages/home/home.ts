@@ -8,16 +8,29 @@ import { Platform} from 'ionic-angular';
 })
 export class HomePage {
 
+  t:Tabs;
+  childNavsList: Array<NavController>;
+
   constructor(public navCtrl: NavController, private platform: Platform) {
     console.log("BEGIN HomePage");
-    let t: Tabs = this.navCtrl.parent;
+    this.t = this.navCtrl.parent;
     console.log("END HomePage");
   }
 
   selectTab(index: number) {
     console.log("navigateToProjectsPage....");
-    let t: Tabs = this.navCtrl.parent;
-    t.select(index);
+    //let t: Tabs = this.navCtrl.parent;
+    //t = this.navCtrl.parent;
+    this.t.select(index);
+  }
+
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter HomePage');
+    this.childNavsList = this.t.getAllChildNavs();
+    console.log("childNavsList.length : " + this.childNavsList.length);
+    console.log("childNavsList[1].tabTitle : " + this.childNavsList[1].tabTitle);
+    this.childNavsList[1].goToRoot();
+
   }
 
   exitApp(){

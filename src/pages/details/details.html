@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-navbar color="blueish">
+    <ion-title>Details</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-label class="projectLabel" color="danger">Project Name:
+    {{project.projectName | uppercase}}
+  </ion-label>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Local Contractors Only:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.local}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Include Supplies:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.supplies}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Include Install Costs:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.installation}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Licensed Contractor Only:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.licensed}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Quote Requested:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.quote}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Call requested:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.call}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Time Frame:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.timeFrame}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-left col-sm-6 left color="primary">
+            Approximate Budget:
+          </ion-col>
+          <ion-col text-right col-sm-6>
+            {{project.budget || 100 | currency}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+      <ion-row>
+        <ion-col col-6 *ngFor="let photo of project.photos; let id = index">
+          <ion-card class="block">
+            <img [src]="photo" *ngIf="photo"/>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+

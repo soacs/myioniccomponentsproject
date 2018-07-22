@@ -16,7 +16,9 @@ export class TabsPage {
   tab4Root = ProjectsPage;
 
   constructor(private platform: Platform) {
+    console.log("BEGIN TabsPage");
     this.platform = platform;
+    console.log("END TabsPage");
   }
   exitApp(){
     console.log('BEGIN exitApp');
