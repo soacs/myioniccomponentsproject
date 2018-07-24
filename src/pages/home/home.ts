@@ -9,7 +9,7 @@ import { Platform} from 'ionic-angular';
 export class HomePage {
 
   t:Tabs;
-  childNavsList: Array<NavController>;
+  childNavsList: Array<any>;
 
   constructor(public navCtrl: NavController, private platform: Platform) {
     console.log("BEGIN HomePage");
@@ -29,7 +29,7 @@ export class HomePage {
     this.childNavsList = this.t.getAllChildNavs();
     console.log("childNavsList.length : " + this.childNavsList.length);
     console.log("childNavsList[1].tabTitle : " + this.childNavsList[1].tabTitle);
-    this.childNavsList[1].goToRoot();
+    this.childNavsList[1].goToRoot({});
 
   }
 

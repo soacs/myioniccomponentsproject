@@ -8,12 +8,16 @@ import {FilePath} from '@ionic-native/file-path';
 import {RecordingsPage} from '../recordings/recordings';
 import {Storage} from '@ionic/storage';
 import {ActionSheetController} from 'ionic-angular';
+import {Events} from 'ionic-angular';
+import {AsyncSubject} from 'rxjs';
 
 @Component({
   selector: 'page-general',
   templateUrl: 'general.html',
 })
 export class GeneralPage {
+
+  additionalAudios: Array<string>;
 
   projectName: string;
   projectsDirectory: any;
@@ -23,7 +27,6 @@ export class GeneralPage {
   // requirements
   budget: string;
   timeFrame: string;
-  //immediate: boolean = false;
   local: boolean = false;
   supplies: boolean = false;
   installation: boolean = false;
@@ -32,22 +35,25 @@ export class GeneralPage {
   call: boolean = false;
   quote: boolean = false;
   photos: Array<string>;
-  audios: Array<string>;
+  audios: Array<any>;
   videos: Array<string>;
 
-  // needed members
-  recording: boolean = false;
-  myFilePath: string;
-  fileName: string;
-  audio: MediaObject;
+  // picture needed members
   base64Image: string;
   lastImage: string;
   isChecked: boolean = false;
+
+  // audio needed members
+  recording: boolean = false;
+  playing: boolean = false;
+  duration: number = 0;
+  position: number = 0;
+  //audio: MediaObject;
+
   // form
   generalForm: FormGroup;
-  initTimeFrame = 'Immediate';
 
-  constructor(private filePath: FilePath, private platform: Platform, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage,  public actionSheetCtrl: ActionSheetController) {
+  constructor(private filePath: FilePath, private platform: Platform, public events: Events, public navCtrl: NavController, public navParams: NavParams, private media: Media, private file: File, private camera: Camera, private alertCtrl: AlertController, private formBuilder: FormBuilder, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storage: Storage, public actionSheetCtrl: ActionSheetController) {
     console.log('BEGIN GeneralPage constructor');
     this.projectName = this.navParams.get('name');
     console.log('projectName = ' + this.projectName);
@@ -78,7 +84,14 @@ export class GeneralPage {
       call: [''],
       quote: ['']
     });
+
     console.log('END GeneralPage constructor');
+  }
+
+  ngOnInit() {
+    this.photos = [];
+    this.audios = [];
+    this.videos = [];
   }
 
   resetForm() {
@@ -105,46 +118,9 @@ export class GeneralPage {
     console.log('END ionViewDidEnter');
   }
 
-  startRecording() {
-
-    this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
-    this.myFilePath = this.projectDirectory + this.fileName;
-    this.audio = this.media.create(this.myFilePath);
-    this.audio.startRecord();
-    this.recording = true;
-
-    /*  if (this.platform.is('ios')) {
-     this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
-     this.myFilePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + this.fileName;
-     this.audio = this.media.create(this.myFilePath);
-     } else if (this.platform.is('android')) {
-     this.fileName = 'record' + new Date().getDate() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.3gp';
-     this.myFilePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + this.fileName;
-     this.audio = this.media.create(this.myFilePath);
-     }
-     this.audio.startRecord();
-     this.recording = true; */
-  }
-
-  stopRecording() {
-    this.audio.stopRecord();
-    let data: any = {filename: this.fileName};
-    this.audios.push(data);
-    localStorage.setItem('audios', JSON.stringify(this.audios));
-    this.recording = false;
-    this.getAudios();
-  }
-
-  playRecording() {
-    this.audio.play();
-  }
-
   addRecording() {
     console.log('addRecording()');
     this.navCtrl.push(RecordingsPage);
-  }
-
-  addLocalrecording(){
   }
 
   showAlert(message) {
@@ -201,9 +177,6 @@ export class GeneralPage {
     this.navCtrl.pop();
   }
 
-  ngOnInit() {
-    this.photos = [];
-  }
 
   presentLoading() {
     let loader = this.loadingCtrl.create({
@@ -328,27 +301,15 @@ export class GeneralPage {
     });
     confirm.present();
   }
+
   ionViewWillEnter() {
-    this.getAudios();
-  }
-
-  getAudios() {
-    if (localStorage.getItem('audiolist')) {
-      this.audios = JSON.parse(localStorage.getItem('audiolist'));
-      console.log(this.audios);
+    this.additionalAudios = this.navParams.get('additionalAudios') || null;
+    if (this.additionalAudios != null) {
+      this.audios.push(...this.additionalAudios);
+      console.log('additionalAudios = ' + JSON.stringify(this.additionalAudios));
+      this.audios.reverse();
     }
-  }
-
-  playAudio(file, idx) {
-    if (this.platform.is('ios')) {
-      this.myFilePath = this.file.documentsDirectory.replace(/file:\/\//g, '') + file;
-      this.audio = this.media.create(this.myFilePath);
-    } else if (this.platform.is('android')) {
-      this.myFilePath = this.file.externalDataDirectory.replace(/file:\/\//g, '') + file;
-      this.audio = this.media.create(this.myFilePath);
-    }
-    this.audio.play();
-    this.audio.setVolume(0.8);
+    console.log('audios = ' + JSON.stringify(this.audios));
   }
 
   listDirItems(path, dirName) {
@@ -359,14 +320,6 @@ export class GeneralPage {
     }).catch((error) => {
       console.log('error reading,', error);
     });
-  }
-
-  async getProjectsDirectoryAsync() {
-    return await this.storage.get('projectsDirectory');
-  }
-
-  async getDevicePlatformAsync() {
-    return await this.storage.get('devicePlatform');
   }
 
   createActionSheetProject() {
@@ -416,10 +369,60 @@ export class GeneralPage {
 
   private createAudioFileName() {
     console.log('BEGIN createAudioFileName()');
-    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes()+ '_' + new Date().getSeconds() + '.3gp';
+    let newFileName = 'record_' + new Date().getMonth() + '_' + new Date().getDate() + '_' + new Date().getFullYear() + '_' + new Date().getHours() + '_' + new Date().getMinutes() + '_' + new Date().getSeconds() + '.3gp';
     console.log('newFileName = ' + newFileName);
     console.log('END createAudioFileName()');
     return newFileName;
+  }
+
+  play(id) {
+    this.position = 0;
+    this.duration = 0;
+    console.log("Play audio id = " + id);
+    this.audios[id].audio.play(id);
+
+    this.duration = this.audios[id].audio.getDuration();
+    let timerDur = setInterval(() => {
+      this.duration = this.audios[id].audio.getDuration();
+      console.log('-------------------------------------duration = ' + this.duration);
+      clearInterval(timerDur);
+    }, 100);
+    let timerPosition = setInterval(() => {
+      this.audios[id].audio.getCurrentPosition().then((position) => {
+        this.position = position;
+      });
+      console.log('position = ' + this.position);
+    }, 100);
+    this.audios[id].playing = true;
+    let subject = new AsyncSubject();
+    let handle = setInterval(() => {
+      subject.next(this.position)
+      let diff = this.duration - this.position;
+      if (diff < .3) {
+        console.log('calling complete');
+        subject.complete();
+        clearInterval(handle);
+      }
+    }, 100);
+
+    let subscription = subject.subscribe(
+      (x) => {
+        console.log('Next: ' + x.toString());
+      },
+      (err) => {
+        console.log('Error: ' + err);
+      },
+      () => {
+        this.audios[id].playing = false;
+        console.log('Completed');
+        clearInterval(timerPosition);
+        console.log('this.audios[id].playing: ' + this.audios[id].playing);
+      });
+  }
+
+  pause(id) {
+    console.log("Pause audio id= " + id);
+    this.audios[id].audio.pause();
   }
 
 }

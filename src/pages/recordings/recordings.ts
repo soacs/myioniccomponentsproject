@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {Media, MediaObject} from '@ionic-native/media';
 import {File} from '@ionic-native/file';
-import {NavController, NavParams, AlertController, ToastController, LoadingController, Platform} from 'ionic-angular';
-import { Observable, Subject, AsyncSubject} from 'rxjs';
+import {NavController, AlertController, Platform} from 'ionic-angular';
+import {AsyncSubject} from 'rxjs';
+import { Events } from 'ionic-angular';
 
 @Component({
   selector: 'page-recordings',
@@ -16,35 +17,16 @@ export class RecordingsPage {
   position: number = 0;
   items: any;
   audio: MediaObject;
-  mediaDirectory: string;
   fileName: string;
   filePath: string;
   audios: Array<any> = [];
   presentAudio: any;
 
-  constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController) {
-
-    this.file.checkDir(this.file.dataDirectory, 'mydir').then(() => console.log('Directory mydir already exists')).catch(err => {
-        console.log('Directory mydir does not exist, calling createDir...');
-        this.file.createDir(this.file.dataDirectory, "mydir", false).then(() => {
-          console.log("we just created the directory mydir");
-        }).catch((err) => {
-          console.error("error trying to create directory mydir", err);
-        });
-      }
-    );
-
-    this.mediaDirectory = this.file.dataDirectory + "mydir/";
-    console.log("this.file.dataDirectory = " + this.file.dataDirectory);
-    console.log("this.mediaDirectory = " + this.mediaDirectory);
+  constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController, public events: Events) {
   }
 
   ngOnInit() {
     this.audios = [];
-  }
-
-  listDirItems() {
-    this.listDir(this.file.externalDataDirectory, "");
   }
 
   listDir = (path, dirName) => {
@@ -81,10 +63,10 @@ export class RecordingsPage {
     }, 100);
     this.audios[id].playing = true;
     let subject = new AsyncSubject();
-    let handle = setInterval(() =>{
+    let handle = setInterval(() => {
       subject.next(this.position)
       let diff = this.duration - this.position;
-        if ( diff < .3) {
+      if (diff < .3) {
         console.log('calling complete');
         subject.complete();
         clearInterval(handle);
@@ -92,13 +74,13 @@ export class RecordingsPage {
     }, 100);
 
     let subscription = subject.subscribe(
-      (x)=> {
+      (x) => {
         console.log('Next: ' + x.toString());
       },
       (err) => {
         console.log('Error: ' + err);
       },
-      () =>{
+      () => {
         this.audios[id].playing = false;
         console.log('Completed');
         clearInterval(timerPosition);
@@ -175,10 +157,11 @@ export class RecordingsPage {
     this.audios.push(this.presentAudio);
     console.log('presentAudio pushed to array - hurray!');
     this.audios.reverse();
-    this.listDir(this.file.externalDataDirectory, "");
+    //this.listDir(this.file.externalDataDirectory, "");
   }
 
   finishedAddingRecordings() {
+    this.navCtrl.getPrevious().data.additionalAudios = this.audios;
     this.navCtrl.pop();
   }
 
