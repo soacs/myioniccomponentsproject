@@ -25,7 +25,7 @@ export class GeneralPage {
   devicePlatform: any;
 
   // requirements
-  budget: string;
+  budget: string ='100';
   timeFrame: string;
   local: boolean = false;
   supplies: boolean = false;
@@ -74,7 +74,7 @@ export class GeneralPage {
     });
 
     this.generalForm = this.formBuilder.group({
-      budget: [''],
+      budget: ['100'],
       timeFrame: ['Immediate'],
       local: [''],
       supplies: [''],

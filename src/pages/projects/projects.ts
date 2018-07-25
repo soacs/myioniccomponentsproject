@@ -68,7 +68,7 @@ export class ProjectsPage {
   }
 
   searchProjects() {
-    this.navCtrl.push('SearchPage');
+    this.navCtrl.push(SearchPage);
   }
 
 
