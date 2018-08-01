@@ -22,10 +22,13 @@ export class ListPage {
     this.storage.get('projects').then(val=>{
       if(val !== null){
         this.projects = val;
+        console.log('projects = ' + JSON.stringify( this.projects));
         this.originalProjects = this.projects.slice();
         this.projectCount = val.length;
         console.log('projectCount val = ' + val.length);
         console.log('projectCount this = ' + this.projectCount);
+        console.log('val = ' + JSON.stringify( val));
+        console.log('projects = ' + JSON.stringify( this.projects));
       } else {
         console.log('ERROR projects were not found in storage!');
       }

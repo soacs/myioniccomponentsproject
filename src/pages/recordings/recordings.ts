@@ -19,7 +19,7 @@ export class RecordingsPage {
   audio: MediaObject;
   fileName: string;
   filePath: string;
-  audios: Array<any> = [];
+  audios: Array<any>;
   presentAudio: any;
 
   constructor(public navCtrl: NavController, private media: Media, public platform: Platform, public file: File, private alertCtrl: AlertController, public events: Events) {

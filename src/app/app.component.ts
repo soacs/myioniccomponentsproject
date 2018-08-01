@@ -5,28 +5,18 @@ import {SplashScreen} from '@ionic-native/splash-screen';
 import {File} from '@ionic-native/file';
 import {Storage} from '@ionic/storage';
 import {TabsPage} from '../pages/tabs/tabs';
-import {Logger, LoggingService} from "ionic-logging-service";
 
 @Component({
   templateUrl: 'app.html',
-  providers: [
-    LoggingService
-  ]
+  providers: []
 })
 export class MyApp {
   rootPage: any = TabsPage;
   projectsDirectoryName: string = 'projects';
-  projectsDirectory: string;
   devicePlatform: string;
   projects: Array<any> = undefined;
 
-  private logger: Logger;
-
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private file: File, private storage: Storage, loggingService: LoggingService) {
-    /*this.logger = loggingService.getLogger("MyApp.MyComponent");
-     const methodName = "ctor";
-     this.logger.entry(methodName);
-     this.logger.exit(methodName); */
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private file: File, private storage: Storage) {
 
     platform.ready().then(() => {
       statusBar.styleDefault();
@@ -43,25 +33,9 @@ export class MyApp {
         this.devicePlatform = 'android';
       }
 
-      this.file.checkDir(this.file.dataDirectory, this.projectsDirectoryName).then(() => console.log(`Directory named ' + this.projectsDirectoryName + ' already exists`)).catch(err => {
-          console.log('Directory ' + this.projectsDirectoryName + ' does not exist, so now calling createDir...');
-          this.file.createDir(this.file.dataDirectory, this.projectsDirectoryName, false).then(() => {
-            console.log('we just created the directory named ' + this.projectsDirectoryName);
-          }).catch((err) => {
-            console.error('error trying to create directory named ' + this.projectsDirectoryName, err);
-          });
-        }
-      );
-
-      this.projectsDirectory = this.file.dataDirectory + this.projectsDirectoryName + '/';
-
       console.log("this.file.dataDirectory = " + this.file.dataDirectory);
-      console.log("this.projectsDirectory = " + this.projectsDirectory);
       console.log("this.devicePlatform = " + this.devicePlatform);
 
-      console.log("Store dataDirectory, projectsDirectory and devicePlatform into storage");
-
-      this.storage.set('projectsDirectory', this.projectsDirectory);
       this.storage.set('devicePlatform', this.devicePlatform);
       this.storage.get('projects').then(val => {
         if (val === null) {

@@ -4,9 +4,9 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <ion-label class="projectLabel" color="danger">Project Name:
-    {{projectName | uppercase}}
-  </ion-label>
+  <ion-item>
+    <ion-label class="projectLabel" padding-right><b>Project Name:</b><b class="projectLabelName">{{projectName | uppercase}}</b> </ion-label>
+  </ion-item>
   <form #f="ngForm" [formGroup]="generalForm" (ngSubmit)="onSubmit(f)">
     <ion-item color="blueish" no-padding-top  no-padding-bottom>
       <ion-label>Requirements </ion-label>
@@ -41,7 +41,7 @@
         <ion-badge item-end color="primary">{{budget || 100 | currency}}</ion-badge>
       </ion-item>
       <ion-item>
-        <ion-range min="100" max="1000" step="10" [(ngModel)]="budget" formControlName="budget">
+        <ion-range min="99" max="1000" step="10" [(ngModel)]="budget" formControlName="budget">
           <ion-icon small range-left name="logo-usd"></ion-icon>
           <ion-icon range-right name="logo-usd"></ion-icon>
         </ion-range>
@@ -57,15 +57,15 @@
           <ion-icon range-right name="time"></ion-icon>
         </ion-range>
       </ion-item>
-
     </ion-list>
     <ion-card>
+
       <ion-card-header color="darksteel">Recordings</ion-card-header>
       <ion-card-content>
         <ion-item>
           <div ion-button color="manageColor" round (click)="addRecording()">
             <ion-icon name="mic" large padding-right></ion-icon>
-            Add Recording
+            Add Recordings
           </div>
         </ion-item>
         <ion-grid *ngFor="let audio of audios; let id = index">
@@ -77,22 +77,28 @@
               <ion-label padding="2px">{{audio.fileName | slice:18}}</ion-label>
             </ion-col>
             <ion-col col-2 align-self-center no-padding no-margin>
-              <button ion-button clear item-end large (click)="play(id)">
+
+              <div ion-button clear item-end large (click)="play(id)">
                 <ion-icon name="play"></ion-icon>
-              </button>
+              </div>
+
             </ion-col>
             <ion-col col-2 align-self-center no-padding no-margin>
-              <button ion-button clear item-end large (click)="pause(id)">
+              <div ion-button ion-button clear item-end large (click)="pause(id)">
                 <ion-icon name="pause"></ion-icon>
-              </button>
+              </div>
+
+
             </ion-col>
           </ion-row>
         </ion-grid>
       </ion-card-content>
     </ion-card>
+
     <ion-card>
+
+      <ion-card-header color="darksteel">Photos</ion-card-header>
       <ion-card-content>
-        <p>Photos</p>
         <ion-item>
           <div ion-button color="manageColor" round (click)="takePhoto()">
             <ion-icon name="camera" large padding-right></ion-icon>
@@ -109,7 +115,6 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-
       </ion-card-content>
     </ion-card>
     <ion-item>

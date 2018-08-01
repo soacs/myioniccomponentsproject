@@ -7,16 +7,16 @@
 </ion-header>
 <ion-content padding>
   <ion-card>
+    <ion-card-header color="darksteel">Add Recording Requirements</ion-card-header>
     <ion-card-content>
-      <ion-card-title text-center>
-        <p>Add Recording Requirements</p>
-      </ion-card-title>
       <button ion-button primary (click)="stopRecording()" *ngIf="recording">
         <ion-icon name="mic-off" padding-right></ion-icon>Stop Recording
       </button>
+
       <button ion-button primary round (click)="startAnotherRecording()" *ngIf="!recording">
         <ion-icon name="mic" padding-right></ion-icon>Start Recording
       </button>
+
       <ion-grid *ngFor="let audio of audios; let id = index">
         <ion-row no-padding no-margin>
           <ion-col col-2 align-self-center no-padding no-margin>

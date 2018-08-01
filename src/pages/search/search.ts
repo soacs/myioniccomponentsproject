@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {ItemSliding} from 'ionic-angular';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'page-search',
@@ -13,42 +14,54 @@ export class SearchPage {
   isOpen: boolean = true;
   searchQuery: string = '';
 
-  projectItems: Array<any> = ["Project one", "Project two", "Project three", "Project four", "Project five"];
-  completedProjectItems: Array<any> = ["Project six completed", "Project seven completed", "Project eight completed"];
+  projectCount: number = 0;
+  projects: Array<any>;
+  originalProjects: Array<any>;
+  filteredProjects: Array<any>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    console.log('ListPage constructor');
-    this.initializeProjectItems();
+  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage) {
+    console.log('BEGIN SearchPage constructor');
+    this.storage.get('projects').then(val=>{
+      if(val !== null){
+        this.projects = val;
+        console.log('projects = ' + JSON.stringify( this.projects));
+        this.originalProjects = this.projects.slice();
+        this.projectCount = val.length;
+        console.log('projectCount val = ' + val.length);
+        console.log('projectCount this = ' + this.projectCount);
+        console.log('val = ' + JSON.stringify( val));
+        console.log('projects = ' + JSON.stringify( this.projects));
+      } else {
+        console.log('ERROR projects were not found in storage!');
+      }
+    });
+    console.log('END SearchPage constructor');
+  }
+
+  ngOnInit() {
+  }
+
+  completeProject(projectItem: string, slidingItem: ItemSliding) {
+    console.log('BEGIN completeProject');
+    let i =  this.projects.indexOf(projectItem);
+    if(i != -1) {
+      console.log('this.projects[i].status = ' + this.projects[i].status);
+      this.projects[i].status = 'complete';
+      console.log('after set this.projects[i].status = ' + this.projects[i].status);
+    }
+    slidingItem.close();
+    //this.projects.reverse();
+    console.log('END completeProject');
   }
 
   deleteProject(projectItem: string) {
     // Find and remove item from an array
-    var i =  this.projectItems.indexOf(projectItem);
+    let i =  this.projects.indexOf(projectItem);
     if(i != -1) {
-      this.projectItems.splice(i, 1);
+      this.projects.splice(i, 1);
     }
   }
 
-  deleteCompletedProject(projectItem: string) {
-    // Find and remove item from an array
-    var i =  this.completedProjectItems.indexOf(projectItem);
-    if(i != -1) {
-      this.completedProjectItems.splice(i, 1);
-    }
-  }
-  /*
-  segmentChanged(event: Event) {
-    console.log("event.value = " + event.value);
-    this.projectState =  event.value;
-    if(this.projectState=="open"){
-      this.isOpen = true;
-    } else {
-      this.isOpen = false;
-    }
-
-    console.log("projectState = " + this.projectState);
-  }
-*/
   closeProject(slidingItem: ItemSliding) {
     slidingItem.close();
   }
@@ -57,32 +70,24 @@ export class SearchPage {
     console.log('ionViewDidLoad ListPage');
   }
 
-  removeProject(){
-    console.log('remove project');
-  }
-
-  ngOnInit() {
+  resetProjects() {
+    this.projects = this.originalProjects.slice();
   }
 
   getItems(ev: any) {
     // Reset items back to all of the items
-    this.initializeProjectItems();
+    this.resetProjects();
 
     // set val to the value of the searchbar
     let val = ev.target.value;
 
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
-      this.projectItems = this.projectItems.filter((item) => {
-        return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      this.projects = this.projects.filter((item) => {
+        return (item.projectName.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
   }
-
-  initializeProjectItems() {
-    this.projectItems = ["Project one", "Project two", "Project three", "Project four", "Project five"];
-  }
-
 
 
 }

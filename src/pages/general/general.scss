@@ -3,8 +3,13 @@ page-general {
     background-color:#8BC34A !important;
   }
   .projectLabel {
-    size:44px;
+    size:44px !important;
     text-align: center;
+    color: color($colors, blueish);
   }
-
+  .projectLabelName {
+    size:44px !important;
+    text-align: center;
+    color: color($colors, danger);
+  }
 }

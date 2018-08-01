@@ -4,6 +4,7 @@ import {GeneralPage} from '../general/general';
 import {ListPage} from '../list/list';
 import {SearchPage} from '../search/search';
 import {PublishPage} from '../publish/publish';
+import {CompletePage} from '../complete/complete';
 import {PopoverController} from 'ionic-angular';
 import {PopoverPage} from '../popover/popover';
 import {Storage} from '@ionic/storage';
@@ -23,8 +24,7 @@ export class ProjectsPage {
     this.storage.get('projects').then(val=>{
       if(val !== null){
         this.projectCount = val.length;
-        console.log('projectCount val = ' + val.length);
-        console.log('projectCount this = ' + this.projectCount);
+        console.log('projectCount = ' + this.projectCount);
       } else {
         console.log('ERROR projects were not found in storage!');
       }
@@ -69,6 +69,10 @@ export class ProjectsPage {
 
   searchProjects() {
     this.navCtrl.push(SearchPage);
+  }
+
+  completeProjects() {
+    this.navCtrl.push(CompletePage);
   }
 
 

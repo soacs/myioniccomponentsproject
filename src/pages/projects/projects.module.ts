@@ -5,6 +5,7 @@ import {GeneralPage} from '../general/general';
 import {ListPage} from '../list/list';
 import {SearchPage} from '../search/search';
 import {PublishPage} from '../publish/publish';
+import {CompletePage} from '../complete/complete';
 import {RecordingsPage} from '../recordings/recordings';
 import {PopoverPage} from '../popover/popover';
 import {Camera} from '@ionic-native/camera';
@@ -17,6 +18,7 @@ import {DetailsPage} from '../details/details';
     ListPage,
     SearchPage,
     PublishPage,
+    CompletePage,
     RecordingsPage,
     PopoverPage,
     DetailsPage
@@ -32,6 +34,7 @@ import {DetailsPage} from '../details/details';
     ListPage,
     SearchPage,
     PublishPage,
+    CompletePage,
     RecordingsPage,
     PopoverPage,
     DetailsPage

@@ -17,15 +17,13 @@ import {AsyncSubject} from 'rxjs';
 })
 export class GeneralPage {
 
-  additionalAudios: Array<string>;
+  additionalAudios: Array<any>;
 
   projectName: string;
-  projectsDirectory: any;
-  projectDirectory: string;
   devicePlatform: any;
 
   // requirements
-  budget: string ='100';
+  budget: string = '100';
   timeFrame: string;
   local: boolean = false;
   supplies: boolean = false;
@@ -37,6 +35,7 @@ export class GeneralPage {
   photos: Array<string>;
   audios: Array<any>;
   videos: Array<string>;
+  audiosSimple: Array<string>;
 
   // picture needed members
   base64Image: string;
@@ -57,16 +56,6 @@ export class GeneralPage {
     console.log('BEGIN GeneralPage constructor');
     this.projectName = this.navParams.get('name');
     console.log('projectName = ' + this.projectName);
-    console.log('createAudioFileName = ' + this.createAudioFileName());
-    this.storage.get('projectsDirectory').then((val) => {
-      this.projectsDirectory = val;
-      this.projectDirectory = this.projectsDirectory + this.projectName + '/';
-      console.log('this.file.dataDirectory = ' + this.file.dataDirectory);
-      console.log('this.projectsDirectory = ' + this.projectsDirectory);
-      console.log('this.projectDirectory = ' + this.projectDirectory);
-      console.log('Store projectDirectory in storage');
-      this.storage.set('projectDirectory', this.projectDirectory);
-    });
 
     this.storage.get('devicePlatform').then((val) => {
       this.devicePlatform = val;
@@ -91,6 +80,7 @@ export class GeneralPage {
   ngOnInit() {
     this.photos = [];
     this.audios = [];
+    this.audiosSimple = [];
     this.videos = [];
   }
 
@@ -103,18 +93,7 @@ export class GeneralPage {
 
   ionViewDidEnter() {
     console.log('BEGIN ionViewDidEnter');
-    console.log('this.projectDirectory = ' + this.projectDirectory);
-    console.log('Checking projectDirectory = ' + this.projectDirectory + ' on platform = ' + this.devicePlatform);
-    this.file.checkDir(this.projectsDirectory, this.projectName).then(() => console.log(`Directory ' + this.projectName + ' already exists`)).catch(err => {
-        console.log('Directory ' + this.projectName + ' does not exist, so now calling createDir...');
-        this.file.createDir(this.projectsDirectory, this.projectName, false).then(() => {
-          console.log('we just created the directory ' + this.projectName);
-        }).catch((err) => {
-          console.error('error trying to create directory ' + this.projectName, err);
-        });
-      }
-    );
-    this.listDirItems(this.file.dataDirectory, 'projects');
+    this.listDirItems(this.file.dataDirectory, '');
     console.log('END ionViewDidEnter');
   }
 
@@ -137,7 +116,7 @@ export class GeneralPage {
   }
 
   save() {
-    console.log('save() called');
+    console.log('BEGIN save()');
     let project = {
       'projectName': this.projectName,
       'budget': this.budget,
@@ -154,21 +133,33 @@ export class GeneralPage {
       'status': 'open'
     };
 
+    console.log('project.audios = ' + JSON.stringify(project.audios));
+    console.log('project.photos = ' + JSON.stringify(project.photos));
+    console.log('project = ' + JSON.stringify(project));
+
     this.storage.get('projects').then(val => {
       if (val !== null) {
         console.log('val.length before push: ' + val.length);
         val.push(project);
         console.log('val.length after push: ' + val.length);
+        console.log('project.audios = ' + JSON.stringify(project.audios));
+        console.log('project.photos = ' + JSON.stringify(project.photos));
         console.log('set projects in storage again.');
         console.log('projects = ' + JSON.stringify(val));
-        //this.storage.remove('projects');
-        this.storage.set('projects', val).then(data => {
-          console.log('projects IS SAVED FOR CRYING OUT LOUD');
-          console.log('SAVED DATA =' + JSON.stringify(data));
-        });
+        try {
+          console.log('START STORAGE SET');
+          this.storage.set('projects', val).then(data => {
+            console.log('projects IS SAVED FOR CRYING OUT LOUD');
+            console.log('SAVED DATA =' + JSON.stringify(data));
+          });
+          console.log('END STORAGE SET');
+        } catch (e) {
+          console.log("AUDIO STORE ERROR: " + e.toString());
 
+        }
       }
     });
+    console.log('END save()');
   }
 
   cancel() {
@@ -205,9 +196,7 @@ export class GeneralPage {
       console.log('onSumit calling save()!');
       this.save();
       console.log('onSumit after calling save()!');
-
       this.presentLoading();
-      //this.generalForm.reset();
     }
   }
 
@@ -240,20 +229,6 @@ export class GeneralPage {
     console.log('newFileName = ' + newFileName);
     console.log('END createFileName()');
     return newFileName;
-  }
-
-// Copy the image to a local folder
-  private copyFileToLocalDir(namePath, currentName, newFileName) {
-    console.log('BEGIN copyFileToLocalDir()');
-    this.file.copyFile(namePath, currentName, this.projectDirectory, newFileName).then(success => {
-      this.lastImage = newFileName;
-      console.log('lastImage = ' + this.lastImage);
-      console.log('list final directory contents');
-      this.listDirItems(this.file.dataDirectory, 'projects');
-    }, error => {
-      console.log('Error while storing file. error = ' + error);
-    });
-    console.log('END copyFileToLocalDir()');
   }
 
   deletePhoto(index) {
@@ -303,13 +278,39 @@ export class GeneralPage {
   }
 
   ionViewWillEnter() {
+    console.log('BEGIN ionViewWillEnter');
     this.additionalAudios = this.navParams.get('additionalAudios') || null;
     if (this.additionalAudios != null) {
       this.audios.push(...this.additionalAudios);
-      console.log('additionalAudios = ' + JSON.stringify(this.additionalAudios));
+      console.log('this.audios.length = ' + this.audios.length);
+      for(let audio of this.audios){
+        console.log('audio  = ' + JSON.stringify(audio));
+        console.log('audio.audio  = ' + JSON.stringify(audio.audio));
+      }
       this.audios.reverse();
+
+      try {
+        console.log('START ionViewWillEnter audiosSimple STORAGE SET');
+
+        for(let audio of this.audios){
+          this.audiosSimple.push(audio.audio);
+        }
+        console.log('this.audiosSimple = ' + JSON.stringify(this.audiosSimple));
+        let mytest = {
+          'audios': this.audiosSimple
+        };
+        console.log('start storing mytest = ' + JSON.stringify(mytest));
+        this.storage.set('mytest', mytest).then(data => {
+          console.log('mytest IS SAVED FINALLY');
+          console.log('mytest SAVED DATA =' + JSON.stringify(data));
+        });
+        console.log('END ionViewWillEnter audiosSimple STORAGE SET');
+      } catch (e) {
+        console.log(typeof e);
+        console.log("mytest AUDIO STORE ERROR: " + e);
+      }
     }
-    console.log('audios = ' + JSON.stringify(this.audios));
+    console.log('END ionViewWillEnter');
   }
 
   listDirItems(path, dirName) {
@@ -322,50 +323,6 @@ export class GeneralPage {
     });
   }
 
-  createActionSheetProject() {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Create Home Project',
-      buttons: [
-        {
-          text: 'General',
-          handler: () => {
-            this.navCtrl.push(GeneralPage);
-            console.log('General clicked');
-          }
-        }, {
-          text: 'Kitchen',
-          handler: () => {
-            console.log('Kitchen clicked');
-          }
-        }
-        , {
-          text: 'Bedroom',
-          handler: () => {
-            console.log('Bedroom clicked');
-          }
-        }
-        , {
-          text: 'Living Room',
-          handler: () => {
-            console.log('Living Room clicked');
-          }
-        }
-        , {
-          text: 'Dining Room',
-          handler: () => {
-            console.log('Dining Room clicked');
-          }
-        }, {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
-  }
 
   private createAudioFileName() {
     console.log('BEGIN createAudioFileName()');
